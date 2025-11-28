@@ -9,5 +9,17 @@ Index Page
 {% endblock %}
 
 {% block scripts %}
+<script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
 <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+<script>
+    const socket = io();
+
+    socket.on("connect", () => {
+        console.log("Connected! SID:", socket.id);
+    });
+
+    socket.on("disconnect", () => {
+        console.log("Disconnected!");
+    });
+</script>
 {% endblock %}
