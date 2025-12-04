@@ -1,0 +1,198 @@
+ * {
+     box-sizing: border-box;
+     font-family: 'Press Start 2P', cursive;
+     user-select: none;
+
+ }
+
+ /* --- 像素风游戏结束页 --- */
+ #result-overlay {
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     display: none;
+     flex-direction: column;
+     justify-content: center;
+     align-items: center;
+     /* 半透明黑色背景，增加复古感 */
+     background-color: rgba(0, 0, 0, 0.85);
+     z-index: 10;
+     /* 全局应用像素字体 */
+     font-family: 'Press Start 2P', cursive;
+     text-transform: uppercase;
+ }
+
+ /* 结果容器：模仿 index.css 中的 .center-panel */
+ .result-box {
+     background: #000000;
+     padding: 40px;
+     text-align: center;
+     /* 双层边框效果 */
+     border: 4px solid #ffffff;
+     outline: 4px solid #000000;
+     box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.5);
+     /* 硬朗的像素阴影 */
+     min-width: 500px;
+ }
+
+ #result-title {
+     font-size: 48px;
+     /* 像素字体不用太大，48px已经很具冲击力 */
+     margin-bottom: 30px;
+     line-height: 1.5;
+     /* 默认白色，JS 会覆盖颜色 */
+     color: #ffffff;
+     text-shadow: 4px 4px #000000;
+ }
+
+ #result-subtitle {
+     font-size: 14px;
+     color: #bbbbbb;
+     /* 模仿 label 颜色 */
+     margin-bottom: 50px;
+     letter-spacing: 1px;
+     line-height: 1.8;
+ }
+
+ /* --- 像素风返回按钮 --- */
+ .btn-return {
+     width: 100%;
+     padding: 20px;
+     font-family: 'Press Start 2P', cursive;
+     font-size: 16px;
+     text-transform: uppercase;
+     cursor: pointer;
+
+     /* 黑白反转风格，与 index.css 的 btn-main 一致 */
+     background-color: #ffffff;
+     color: #000000;
+     border: 4px solid #ffffff;
+     /* 保持硬朗边框 */
+
+     position: relative;
+     top: 0;
+     transition: none;
+     /* 像素风不需要平滑过渡 */
+     box-shadow: 6px 6px 0px #333333;
+     /* 按钮阴影 */
+ }
+
+ .btn-return:hover {
+     background-color: #cccccc;
+     border-color: #cccccc;
+     top: 2px;
+     /* 按压感 */
+     box-shadow: 4px 4px 0px #333333;
+ }
+
+ .btn-return:active {
+     background-color: #aaaaaa;
+     top: 6px;
+     box-shadow: 0px 0px 0px #333333;
+ }
+
+ /* --- 状态颜色类 (JS动态添加) --- */
+ /* 胜利：经典的街机绿或金 */
+ .title-victory {
+     color: #44ff44 !important;
+     text-shadow: 4px 4px #005500 !important;
+ }
+
+ /* 失败：经典的街机红 */
+ .title-defeat {
+     color: #ff3333 !important;
+     text-shadow: 4px 4px #550000 !important;
+ }
+
+ /* 平局：青色 */
+ .title-draw {
+     color: #33ffff !important;
+     text-shadow: 4px 4px #005555 !important;
+ }
+
+ /* --- [核心修改] HUD (抬头显示) 样式 --- */
+ .hud-container {
+     position: absolute;
+     display: flex;
+     width: 100%;
+     align-items: center;
+     padding: 20px 50px;
+     /* 增加边距，不要贴边 */
+     z-index: 10;
+     pointer-events: none;
+     /* 让鼠标穿透 UI，防止遮挡游戏点击 */
+ }
+
+ /* 名字样式 */
+ .player-name {
+     color: #fff;
+     font-size: 16px;
+     margin-bottom: 10px;
+     text-transform: uppercase;
+     text-shadow: 3px 3px 0 #000;
+     /* 文字描边效果 */
+     letter-spacing: 1px;
+ }
+
+ /* 血条容器 (槽) */
+ .healthbar-bg {
+     position: relative;
+     width: 100%;
+     height: 40px;
+     /* 加厚血条 */
+     background-color: #222;
+     /* 深灰底色 */
+     border: 4px solid #fff;
+     /* 经典的粗白边框 */
+     box-shadow: 4px 4px 0 #000;
+     /* UI 立体感 */
+ }
+
+ /* 血条填充 (血) */
+ .healthbar-fill {
+     position: absolute;
+     top: 0;
+     height: 100%;
+     /* 移除 transition 实现瞬间扣血的打击感，或者保留 0.1s */
+     transition: width 0.2s ease-out;
+ }
+
+ /* P1 血条颜色 (左) - 亮黄 */
+ #hp-left {
+     background-color: #FFFF00;
+     right: 0;
+     /* 左边玩家血条通常是从左往右减，或者对齐中间 */
+     /* 这里我们保持默认：左对齐 */
+     left: 0;
+ }
+
+ /* P2 血条颜色 (右) - 亮红 */
+ #hp-right {
+     background-color: #FF3D00;
+     /* 右边玩家血条通常是右对齐 (从左往右扣，或者反过来) */
+     /* 这里如果你想让血条向中间缩减，可以使用 float: right 或 absolute right:0 */
+     right: 0;
+     left: auto;
+ }
+
+ /* 计时器样式 */
+ #Timer {
+     width: 100px;
+     height: 100px;
+     background-color: #000;
+     /* 黑底 */
+     border: 4px solid #fff;
+     /* 白框 */
+     color: #fff;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     font-size: 40px;
+     margin: 0 30px;
+     /* 与血条拉开距离 */
+     box-shadow: 4px 4px 0 #000;
+     flex-shrink: 0;
+     text-shadow: 2px 2px 0 #333;
+ }

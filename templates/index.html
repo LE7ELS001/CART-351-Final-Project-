@@ -1,11 +1,94 @@
 {% extends "base.html" %}
 
 {% block title %}
-Index Page
+THE ARENA - LOGIN
+{% endblock %}
+
+{% block head %}
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 {% endblock %}
 
 {% block content %}
-<canvas></canvas>
+<canvas id="bg-canvas"></canvas>
+
+<div class="ui-container">
+    <div class="center-panel">
+        <h1 class="game-title" id="main-title">PIXEL FIGHTER</h1>
+
+        <div class="input-group">
+            <label>INSERT COIN (NAME)</label>
+            <input type="text" id="username" placeholder="PLAYER 1..." maxlength="12">
+        </div>
+
+        <div class="input-group">
+            <label>SELECT COLOR</label>
+            <div class="color-picker-wrapper">
+                <input type="color" id="userColor" value="#ffffff">
+                <span style="font-size: 10px; color: #bbbbbb;">&lt;- CLICK TO CHANGE</span>
+            </div>
+        </div>
+
+        <button class="btn-main" onclick="startGame()">START GAME</button>
+    </div>
+
+    <!-- 这里的按钮保持不变 -->
+    <button class="corner-btn top-right" onclick="toggleModal('leaderboard-modal')">HIGH SCORES</button>
+    <button class="corner-btn bottom-left" onclick="toggleModal('controls-modal')">CONTROLS</button>
+    <button class="corner-btn bottom-right" onclick="toggleModal('about-modal')">CREDITS</button>
+</div>
+
+<!-- 模态框保持不变 -->
+<div id="leaderboard-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="toggleModal('leaderboard-modal')">X</span>
+        <h2>HALL OF FAME</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>RANK</th>
+                    <th>NAME</th>
+                    <th>WINS</th>
+                    <th>LOSS</th>
+                    <th>WIN-LOSS RATIO</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+                <tr>
+                    <td colspan="3">LOADING...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="controls-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="toggleModal('controls-modal')">X</span>
+        <h2>HOW TO PLAY</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px;">
+            <div style="border: 4px solid #ffffff; padding: 20px; text-align: center;">
+                <h3 style="color:#bbbbbb">MOVE</h3>
+                <p><strong style="font-size: 32px;">A</strong> <br> LEFT</p>
+                <p><strong style="font-size: 32px;">D</strong> <br> RIGHT</p>
+            </div>
+            <div style="border: 4px solid #ffffff; padding: 20px; text-align: center;">
+                <h3 style="color:#bbbbbb">FIGHT</h3>
+                <p><strong style="font-size: 32px;">K</strong> <br> JUMP</p>
+                <p><strong style="font-size: 32px;">J</strong> <br> ATTACK</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="about-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="toggleModal('about-modal')">X</span>
+        <h2>PROJECT INFO</h2>
+        <p style="margin-top: 30px; line-height: 1.8;">CART 351 - PROJECT III<br>EXPLORABLE NETWORKED
+            SPACE<br><br>CREATED BY: <strong>[YOUR NAME]</strong><br>2025</p>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
@@ -22,4 +105,5 @@ Index Page
         console.log("Disconnected!");
     });
 </script>
+
 {% endblock %}

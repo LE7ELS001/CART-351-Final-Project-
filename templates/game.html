@@ -1,13 +1,59 @@
 {% extends "base.html" %}
 
 {% block title %}
-Index Page
+game Page
+{% endblock %}
+
+{% block head %}
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-<canvas></canvas>
+<div style="position: relative; display: inline-block; width: 1024px; height: 576px;">
+
+    <!-- 游戏结束遮罩 -->
+    <div id="result-overlay">
+        <div id="result-title">GAME OVER</div>
+        <div id="result-subtitle">Player A Wins</div>
+        <button class="btn-return" onclick="window.location.href='/'">
+            Return to Main Menu
+        </button>
+    </div>
+
+    <!-- HUD (血条和计时器) -->
+    <div class="hud-container">
+
+        <!-- 左侧玩家 (P1) -->
+        <div style="flex: 1; display: flex; flex-direction: column; align-items: flex-start;">
+            <div class="player-name name-left">Player 1</div>
+            <div class="healthbar-bg">
+                <!-- 内部加一个 div 做红色打底(扣血动画)是进阶做法，这里先用简单的 -->
+                <div class="healthbar-fill" id="hp-left" style="width: 100%;"></div>
+            </div>
+        </div>
+
+        <!-- 中间计时器 -->
+        <div id="Timer">60</div>
+
+        <!-- 右侧玩家 (P2) -->
+        <div style="flex: 1; display: flex; flex-direction: column; align-items: flex-end;">
+            <div class="player-name name-right">Waiting for Player 2</div>
+            <div class="healthbar-bg">
+                <div class="healthbar-fill" id="hp-right" style="width: 100%;"></div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <canvas></canvas>
+</div>
 {% endblock %}
 
 {% block scripts %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/game.css') }}">
+<script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+<script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+<script src="{{ url_for('static', filename='js/classes.js') }}"></script>
 <script src="{{ url_for('static', filename='js/game.js') }}"></script>
 {% endblock %}

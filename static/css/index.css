@@ -1,0 +1,258 @@
+/* --- 全局样式 (黑白像素风) --- */
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: #000000;
+    /* 纯黑背景 */
+    /* 全局使用像素字体 */
+    font-family: 'Press Start 2P', cursive;
+    color: #ffffff;
+    image-rendering: pixelated;
+    /* 确保图像像素化显示 */
+}
+
+/* 背景 Canvas */
+#bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    opacity: 0.5;
+    /* 让背景稍微暗一点，突出 UI */
+}
+
+/* UI 层容器 */
+.ui-container {
+    position: relative;
+    z-index: 10;
+    height: 100vh;
+    width: 100vw;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* --- 中心控制台 --- */
+.center-panel {
+    pointer-events: auto;
+    background: #000000;
+    padding: 40px;
+    text-align: center;
+    /* 像素风边框：用双层边框模拟厚度 */
+    border: 4px solid #ffffff;
+    outline: 4px solid #000000;
+    min-width: 400px;
+}
+
+h1.game-title {
+    color: #ffffff;
+    margin-bottom: 40px;
+    font-size: 32px;
+    text-transform: uppercase;
+    /* 简单的像素标题效果 */
+    text-shadow: 4px 4px #555555;
+}
+
+.input-group {
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    font-size: 12px;
+    color: #bbbbbb;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+}
+
+/* 输入框样式 */
+input[type="text"] {
+    width: 100%;
+    padding: 15px;
+    background: #000000;
+    /* 粗边框 */
+    border: 4px solid #ffffff;
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 16px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+input[type="text"]:focus {
+    /* 聚焦时边框变灰 */
+    border-color: #aaaaaa;
+}
+
+/* 颜色选择器容器 */
+.color-picker-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 4px solid #ffffff;
+    padding: 10px;
+    background: #000;
+}
+
+/* 隐藏默认的颜色选择器样式 */
+input[type="color"] {
+    -webkit-appearance: none;
+    border: none;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    background: none;
+    padding: 0;
+}
+
+/* 自定义颜色块的样式 (Chrome/Edge) */
+input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+    border: 4px solid #ffffff;
+    box-sizing: border-box;
+}
+
+/* 主按钮 */
+.btn-main {
+    width: 100%;
+    padding: 20px;
+    background-color: #ffffff;
+    color: #000000;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 20px;
+    border: 4px solid #000000;
+    cursor: pointer;
+    text-transform: uppercase;
+    position: relative;
+    top: 0;
+    transition: 0.1s;
+}
+
+.btn-main:hover {
+    background-color: #cccccc;
+    top: -4px;
+    /* 简单的悬浮效果 */
+    box-shadow: 0 4px 0 #555555;
+}
+
+.btn-main:active {
+    top: 0;
+    box-shadow: none;
+    background-color: #aaaaaa;
+}
+
+/* --- 角落按钮 --- */
+.corner-btn {
+    position: absolute;
+    padding: 15px;
+    background: #000000;
+    border: 4px solid #ffffff;
+    color: #ffffff;
+    cursor: pointer;
+    pointer-events: auto;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.corner-btn:hover {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.top-right {
+    top: 20px;
+    right: 20px;
+}
+
+.bottom-left {
+    bottom: 20px;
+    left: 20px;
+}
+
+.bottom-right {
+    bottom: 20px;
+    right: 20px;
+}
+
+/* --- 模态框 --- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 20;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content {
+    position: relative;
+    margin: 5% auto;
+    padding: 40px;
+    width: 60%;
+    background: #000000;
+    border: 4px solid #ffffff;
+    pointer-events: auto;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.close-btn {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #ffffff;
+}
+
+.close-btn:hover {
+    color: #aaaaaa;
+}
+
+/* 表格样式 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+}
+
+th {
+    text-align: left;
+    color: #ffffff;
+    border-bottom: 4px solid #ffffff;
+    padding: 15px;
+    font-size: 14px;
+}
+
+td {
+    padding: 15px;
+    border-bottom: 2px solid #555555;
+    font-size: 12px;
+}
+
+/* 前三名特殊样式 */
+tr:nth-child(1) td {
+    color: #ffffff;
+}
+
+/* 冠军白 */
+tr:nth-child(2) td {
+    color: #cccccc;
+}
+
+/* 亚军灰 */
+tr:nth-child(3) td {
+    color: #aaaaaa;
+}
+
+/* 季军深灰 */
