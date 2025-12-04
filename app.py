@@ -92,7 +92,7 @@ def run_timer():
     
 
         # prepare phase 
-        for i in range(3,0,-1):
+        for i in range(5,0,-1):
             print(f"Preparation: {i}")
 
             socketio.emit('timer_update', {"time": f"{i}"})
