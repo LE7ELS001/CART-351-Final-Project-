@@ -79,6 +79,7 @@ window.startGame = async function () {
     }
 }
 
+//get player record
 async function loadLeaderboard() {
     const tbody = document.getElementById('leaderboard-body');
     tbody.innerHTML = '<tr><td colspan="5">LOADING...</td></tr>';
@@ -106,7 +107,7 @@ async function loadLeaderboard() {
                 ratio = Math.round((wins / total) * 100) + "%";
             }
 
-            // 排名样式
+
             let rankDisplay = index + 1;
             if (index === 0) rankDisplay = "🏆 1ST";
             if (index === 1) rankDisplay = "🥈 2ND";

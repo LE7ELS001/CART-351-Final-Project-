@@ -1,3 +1,12 @@
+//global variables 
+const spawn_positionsX_left = 100;
+const spawn_positionsX_right = 874;
+
+const p_height = 150;
+const p_width = 50;
+
+const collisionBoxOffsetY = 30;
+
 //dectect for collision 
 function rectCollision({ rect1, rect2 }) {
     return (

@@ -1,10 +1,4 @@
-spawn_positionsX_left = 100;
-spawn_positionsX_right = 700;
 
-p_height = 150;
-p_width = 50;
-
-collisionBoxOffsetY = 30;
 
 
 //Sprite class
@@ -124,7 +118,7 @@ class Player extends Sprite {
         this.framesHold = 15
         this.sprites = sprites || {}
 
-        //color 
+        //color (copy sprites data)
         this.sprites = JSON.parse(JSON.stringify(sprites || {}));
 
         for (const key in this.sprites) {
@@ -158,19 +152,24 @@ class Player extends Sprite {
     }
 
     generateTintedImage(img) {
+        //return original sprite
         if (!this.color || this.color === '#ffffff') {
             return img
         }
 
+        //create a new canvas
         const buffer = document.createElement('canvas');
         buffer.width = img.width;
         buffer.height = img.height;
         const ctx = buffer.getContext('2d');
 
+        //draw the img in the new canvas(buffer)
         ctx.drawImage(img, 0, 0);
 
+        //set the composite operation( only affect the existing parts, ignore the transparent background)
         ctx.globalCompositeOperation = 'source-atop'
 
+        //fill with player choose color
         ctx.fillStyle = this.color;
         ctx.globalAlpha = 0.5;
         ctx.fillRect(0, 0, buffer.width, buffer.height);

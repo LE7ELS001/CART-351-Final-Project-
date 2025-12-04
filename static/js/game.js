@@ -23,11 +23,7 @@ const c = canvas.getContext('2d');
 canvas.width = 1024;
 canvas.height = 576;
 
-spawn_positionsX_left = 100;
-spawn_positionsX_right = 700;
 
-p_height = 150;
-p_width = 50;
 
 c.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -163,13 +159,7 @@ socket.on("player_join", (data) => {
             velocity: { x: 0, y: 0 },
             color: data.color,
             ...SAMURAI_CONFIG
-            // imageSrc: '/static/assets/character/Idle.png',
-            // framesMax: 8,
-            // scale: 3,
-            // offset: {
-            //     x: 215,
-            //     y: 280
-            // }
+
         });
         players[data.playerId].side = data.side;
         players[data.playerId].name = data.playerName;
@@ -197,13 +187,7 @@ socket.on("existing_players", (playersList) => {
                 velocity: { x: 0, y: 0 },
                 color: p.color,
                 ...SAMURAI_CONFIG
-                // imageSrc: '/static/assets/character/Idle.png',
-                // framesMax: 8,
-                // scale: 3,
-                // offset: {
-                //     x: 215,
-                //     y: 280
-                // }
+
             });
             players[p.playerId].side = p.side;
             players[p.playerId].name = p.playerName;
