@@ -1,3 +1,8 @@
+// 工具函数：获取视频路径
+function getVideoPath(fileName) {
+    return `/static/assets/background/${fileName}`;
+}
+
 let myId = localStorage.getItem("fighter_id");
 let myName = localStorage.getItem("fighter_name");
 
@@ -23,9 +28,18 @@ const c = canvas.getContext('2d');
 canvas.width = 1024;
 canvas.height = 576;
 
+const gameBgVideo = document.getElementById("game-bg-video");
+const chosenMap = localStorage.getItem("fighter_map") || "Arizona Desert, U.S.A.mp4";
 
+if (gameBgVideo) {
+    gameBgVideo.src = getVideoPath(chosenMap);
+    gameBgVideo.load();
+    gameBgVideo.play().catch(err => console.warn("Game video autoplay blocked:", err));
+    
+    gameBgVideo.muted = false;
+}
 
-c.fillRect(0, 0, canvas.width, canvas.height);
+// c.fillRect(0, 0, canvas.width, canvas.height);
 
 //players 
 const gravity = 0.3;
@@ -39,9 +53,8 @@ let isGameActive = true;
 let isMatchEnded = false;
 
 
-//background
-const backgroundImage = new Image();
-backgroundImage.src = '/static/assets/background/background.png';
+// const backgroundImage = new Image();
+// backgroundImage.src = '/static/assets/background/background.png';
 
 const SAMURAI_CONFIG = {
     imageSrc: '/static/assets/character/Idle.png',
@@ -386,11 +399,15 @@ let lastState = players[playerId].state;
 
 function animate() {
     window.requestAnimationFrame(animate);
-    // c.fillStyle = 'black';
-    // c.fillRect(0, 0, canvas.width, canvas.height);
-    if (backgroundImage) {
-        c.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-    }
+
+    // ① 每一帧先清掉上一帧的内容
+    c.clearRect(0, 0, canvas.width, canvas.height);
+
+    // ② 如果你已经用 <video> 做背景，这里可以不要背景图了：
+    //    直接删掉这段，或者只在调试时用
+    // if (backgroundImage) {
+    //     c.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+    // }
 
     //find the two actual players 
     const fighters = Object.values(players).filter(p => p.side === 'left' || p.side === 'right');
@@ -545,4 +562,3 @@ setInterval(() => {
         player.velocity.x = moveSpeed;
     }
 }, 16);
-

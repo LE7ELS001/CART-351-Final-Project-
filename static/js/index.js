@@ -1,3 +1,7 @@
+function getVideoPath(fileName) {
+    return `/static/assets/background/${fileName}`;
+}
+
 //HTML Effect 
 function toggleModal(modalId) {
     const modal = document.getElementById(modalId);
@@ -40,7 +44,38 @@ window.addEventListener('load', function () {
         if (colorInput) colorInput.value = storedColor;
     }
 
+    const bgVideo = document.getElementById("bg-video");
+    const mapCards = document.querySelectorAll(".map-card");
+
+    let currentMap = localStorage.getItem("fighter_map") || "Arizona Desert, U.S.A.mp4";
+
+    mapCards.forEach(card => {
+        const mapFile = card.dataset.map;
+        if (mapFile === currentMap) {
+            card.classList.add("selected");
+        }
+        card.addEventListener("click", () => {
+            currentMap = mapFile;
+            localStorage.setItem("fighter_map", currentMap);
+
+            mapCards.forEach(c => c.classList.remove("selected"));
+            card.classList.add("selected");
+
+            if (bgVideo) {
+                bgVideo.src = getVideoPath(currentMap);
+                bgVideo.load();
+                bgVideo.play().catch(err => console.warn("Video play blocked:", err));
+            }
+        });
+    });
+
+    if (bgVideo) {
+        bgVideo.src = getVideoPath(currentMap);
+        bgVideo.load();
+        bgVideo.play().catch(err => console.warn("Video play blocked:", err));
+    }
 });
+
 
 window.startGame = async function () {
     const nameInput = document.getElementById('username');
@@ -150,8 +185,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const logo = document.querySelector(".sf-logo");
     const crt = document.getElementById("crt-overlay");
     const copyright = document.getElementById("sf-copyright");
-    const fireRow = document.getElementById("sf-fire-row"); 
-
+    const bgVideo = document.getElementById("bg-video");
 
     if (!intro) return;
 
@@ -159,15 +193,13 @@ window.addEventListener("DOMContentLoaded", () => {
         if (!bgmStarted) {
             bgmStarted = true;
 
-            if (copyright) {
-                copyright.classList.add("show");
+            if (bgVideo) {
+                bgVideo.muted = false;
+                bgVideo.play().catch(err => console.warn("Video audio blocked:", err));
             }
 
-            if (bgm) {
-                bgm.currentTime = 0;
-                bgm.play().catch(err => {
-                    console.warn("Intro BGM blocked:", err);
-                });
+            if (copyright) {
+                copyright.classList.add("show");
             }
 
             if (subText) {
@@ -187,11 +219,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 crt.classList.add("crt-on");
             }
 
-            if (fireRow) {
-                fireRow.classList.add("show");
-            }
-
-            return; 
+            return;
         }
 
         if (introActive) {
@@ -203,7 +231,7 @@ window.addEventListener("DOMContentLoaded", () => {
             }, 600);
 
             if (crt) {
-                crt.classList.remove("crt-on"); 
+                crt.classList.remove("crt-on");
             }
 
             if (bgm) {

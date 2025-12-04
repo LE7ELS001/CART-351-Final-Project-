@@ -460,3 +460,69 @@ tr:nth-child(3) td {
     50% { opacity: 0.6; }
     100% { opacity: 0.9; }
 }
+
+/* ===== background video ===== */
+.bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;      
+    z-index: 0;             
+    filter: brightness(0.7) contrast(1.2);
+    pointer-events: none;
+}
+
+
+/* ===== STAGE SELECT GRID ===== */
+
+.map-grid {
+    margin-top: 12px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.map-card {
+    background: #000000;
+    border: 3px solid #ffffff;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    opacity: 0.75;
+    transition:
+        transform 0.12s ease-out,
+        border-color 0.12s ease-out,
+        opacity 0.12s ease-out,
+        box-shadow 0.12s ease-out;
+}
+
+.map-card video {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    pointer-events: none; /* 避免点到 video 自己 */
+}
+
+.map-name {
+    font-size: 8px;
+    text-align: center;
+}
+
+/* hover 状态 */
+.map-card:hover:not(.selected) {
+    opacity: 1;
+    border-color: #bbbbbb;
+}
+
+/* 选中地图高亮 */
+.map-card.selected {
+    opacity: 1;
+    border-color: #ffcc33;
+    box-shadow: 0 0 12px rgba(255, 204, 51, 0.85);
+    transform: translateY(-2px);
+}
