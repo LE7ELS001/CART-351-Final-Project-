@@ -144,9 +144,9 @@ async function loadLeaderboard() {
 
 
             let rankDisplay = index + 1;
-            if (index === 0) rankDisplay = "ðŸ† 1ST";
-            if (index === 1) rankDisplay = "ðŸ¥ˆ 2ND";
-            if (index === 2) rankDisplay = "ðŸ¥‰ 3RD";
+            if (index === 0) rankDisplay = "🏆 1ST";
+            if (index === 1) rankDisplay = "🥈 2ND";
+            if (index === 2) rankDisplay = "🥉 3RD";
 
             tr.innerHTML = `
                 <td>${rankDisplay}</td>
@@ -228,6 +228,12 @@ window.addEventListener("DOMContentLoaded", () => {
             intro.classList.add("fade-out");
             setTimeout(() => {
                 intro.style.display = "none";
+                
+                // ⭐ 显示登录界面（淡入效果）
+                const uiContainer = document.querySelector('.ui-container');
+                if (uiContainer) {
+                    uiContainer.classList.add('show');
+                }
             }, 600);
 
             if (crt) {
@@ -251,4 +257,3 @@ window.addEventListener("DOMContentLoaded", () => {
         handleIntroInteraction();
     });
 });
-

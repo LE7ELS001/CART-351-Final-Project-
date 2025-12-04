@@ -1,4 +1,3 @@
-// 工具函数：获取视频路径
 function getVideoPath(fileName) {
     return `/static/assets/background/${fileName}`;
 }
@@ -400,11 +399,8 @@ let lastState = players[playerId].state;
 function animate() {
     window.requestAnimationFrame(animate);
 
-    // ① 每一帧先清掉上一帧的内容
     c.clearRect(0, 0, canvas.width, canvas.height);
 
-    // ② 如果你已经用 <video> 做背景，这里可以不要背景图了：
-    //    直接删掉这段，或者只在调试时用
     // if (backgroundImage) {
     //     c.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
     // }

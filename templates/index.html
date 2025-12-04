@@ -36,89 +36,89 @@ THE ARENA - LOGIN
 <div id="crt-overlay" class="crt-overlay"></div>
 
 <div class="ui-container">
-    <div class="center-panel">
-        <h1 class="game-title" id="main-title">PIXEL FIGHTER</h1>
+    <!-- ⭐ 登录页"屏幕外框"（大小会跟游戏一致） -->
+    <div class="login-screen">
+        <div class="center-panel">
+            <h1 class="game-title" id="main-title">PIXEL FIGHTER</h1>
 
-        <div class="input-group">
-            <label>INSERT COIN (NAME)</label>
-            <input type="text" id="username" placeholder="PLAYER 1..." maxlength="12">
-        </div>
-
-        <div class="input-group">
-            <label>SELECT COLOR</label>
-            <div class="color-picker-wrapper">
-                <input type="color" id="userColor" value="#ffffff">
-                <span style="font-size: 10px; color: #bbbbbb;">&lt;- CLICK TO CHANGE</span>
+            <div class="input-group">
+                <label>INSERT COIN (NAME)</label>
+                <input type="text" id="username" placeholder="PLAYER 1..." maxlength="12">
             </div>
+
+            <div class="input-group">
+                <label>SELECT COLOR</label>
+                <div class="color-picker-wrapper">
+                    <input type="color" id="userColor" value="#ffffff">
+                    <span style="font-size: 10px; color: #bbbbbb;">&lt;- CLICK TO CHANGE</span>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>SELECT STAGE</label>
+                <div id="map-grid" class="map-grid">
+
+                    <div class="map-card" data-map="Arizona Desert, U.S.A.mp4">
+                        <video src="{{ url_for('static', filename='assets/background/Arizona Desert, U.S.A.mp4') }}" muted loop playsinline></video>
+                        <span class="map-name">ARIZONA DESERT</span>
+                    </div>
+
+                    <div class="map-card" data-map="Ayutthaya Temple Ruins, Thailand.mp4">
+                        <video src="{{ url_for('static', filename='assets/background/Ayutthaya Temple Ruins, Thailand.mp4') }}" muted loop playsinline></video>
+                        <span class="map-name">AYUTTHAYA TEMPLE</span>
+                    </div>
+
+                    <div class="map-card" data-map="Beijing, China.mp4">
+                        <video src="{{ url_for('static', filename='assets/background/Beijing, China.mp4') }}" muted loop playsinline></video>
+                        <span class="map-name">BEIJING</span>
+                    </div>
+
+                    <div class="map-card" data-map="Guiana Highlands, Venezuela.mp4">
+                        <video src="{{ url_for('static', filename='assets/background/Guiana Highlands, Venezuela.mp4') }}" muted loop playsinline></video>
+                        <span class="map-name">GUIANA HIGHLANDS</span>
+                    </div>
+
+                    <div class="map-card" data-map="London Underground, England.mp4">
+                        <video src="{{ url_for('static', filename='assets/background/London Underground, England.mp4') }}" muted loop playsinline></video>
+                        <span class="map-name">LONDON UNDERGROUND</span>
+                    </div>
+
+                    <div class="map-card" data-map="New York, U.S.A.mp4">
+                        <video src="{{ url_for('static', filename='assets/background/New York, U.S.A.mp4') }}" muted loop playsinline></video>
+                        <span class="map-name">NEW YORK</span>
+                    </div>
+
+                    <div class="map-card" data-map="San Francisco Bay, U.S.A.mp4">
+                        <video src="{{ url_for('static', filename='assets/background/San Francisco Bay, U.S.A.mp4') }}" muted loop playsinline></video>
+                        <span class="map-name">SAN FRANCISCO BAY</span>
+                    </div>
+
+                    <div class="map-card" data-map="Setagaya-Ku Ni-Chome, Japan.mp4">
+                        <video src="{{ url_for('static', filename='assets/background/Setagaya-Ku Ni-Chome, Japan.mp4') }}" muted loop playsinline></video>
+                        <span class="map-name">SETAGAYA JAPAN</span>
+                    </div>
+
+                    <div class="map-card" data-map="Suzaku Castle, Japan.mp4">
+                        <video src="{{ url_for('static', filename='assets/background/Suzaku Castle, Japan.mp4') }}" muted loop playsinline></video>
+                        <span class="map-name">SUZAKU CASTLE</span>
+                    </div>
+
+                    <div class="map-card" data-map="Temple Street, Hong Kong.mp4">
+                        <video src="{{ url_for('static', filename='assets/background/Temple Street, Hong Kong.mp4') }}" muted loop playsinline></video>
+                        <span class="map-name">TEMPLE STREET HK</span>
+                    </div>
+
+                </div>
+            </div>
+
+            <button class="btn-main" onclick="startGame()">START GAME</button>
         </div>
 
-        <div class="input-group">
-    <label>SELECT STAGE</label>
-    <div id="map-grid" class="map-grid">
-
-        <div class="map-card" data-map="Arizona Desert, U.S.A.mp4">
-            <video src="{{ url_for('static', filename='assets/background/Arizona Desert, U.S.A.mp4') }}" muted loop playsinline></video>
-            <span class="map-name">ARIZONA DESERT</span>
-        </div>
-
-        <div class="map-card" data-map="Ayutthaya Temple Ruins, Thailand.mp4">
-            <video src="{{ url_for('static', filename='assets/background/Ayutthaya Temple Ruins, Thailand.mp4') }}" muted loop playsinline></video>
-            <span class="map-name">AYUTTHAYA TEMPLE</span>
-        </div>
-
-        <div class="map-card" data-map="Beijing, China.mp4">
-            <video src="{{ url_for('static', filename='assets/background/Beijing, China.mp4') }}" muted loop playsinline></video>
-            <span class="map-name">BEIJING</span>
-        </div>
-
-        <div class="map-card" data-map="Guiana Highlands, Venezuela.mp4">
-            <video src="{{ url_for('static', filename='assets/background/Guiana Highlands, Venezuela.mp4') }}" muted loop playsinline></video>
-            <span class="map-name">GUIANA HIGHLANDS</span>
-        </div>
-
-        <div class="map-card" data-map="London Underground, England.mp4">
-            <video src="{{ url_for('static', filename='assets/background/London Underground, England.mp4') }}" muted loop playsinline></video>
-            <span class="map-name">LONDON UNDERGROUND</span>
-        </div>
-
-        <div class="map-card" data-map="New York, U.S.A.mp4">
-            <video src="{{ url_for('static', filename='assets/background/New York, U.S.A.mp4') }}" muted loop playsinline></video>
-            <span class="map-name">NEW YORK</span>
-        </div>
-
-        <div class="map-card" data-map="San Francisco Bay, U.S.A.mp4">
-            <video src="{{ url_for('static', filename='assets/background/San Francisco Bay, U.S.A.mp4') }}" muted loop playsinline></video>
-            <span class="map-name">SAN FRANCISCO BAY</span>
-        </div>
-
-        <div class="map-card" data-map="Setagaya-Ku Ni-Chome, Japan.mp4">
-            <video src="{{ url_for('static', filename='assets/background/Setagaya-Ku Ni-Chome, Japan.mp4') }}" muted loop playsinline></video>
-            <span class="map-name">SETAGAYA JAPAN</span>
-        </div>
-
-        <div class="map-card" data-map="Suzaku Castle, Japan.mp4">
-            <video src="{{ url_for('static', filename='assets/background/Suzaku Castle, Japan.mp4') }}" muted loop playsinline></video>
-            <span class="map-name">SUZAKU CASTLE</span>
-        </div>
-
-        <div class="map-card" data-map="Temple Street, Hong Kong.mp4">
-            <video src="{{ url_for('static', filename='assets/background/Temple Street, Hong Kong.mp4') }}" muted loop playsinline></video>
-            <span class="map-name">TEMPLE STREET HK</span>
-        </div>
-
+        <!-- 角落按钮贴在这个登录屏幕的四个角 -->
+        <button class="corner-btn top-right" onclick="toggleModal('leaderboard-modal')">HIGH SCORES</button>
+        <button class="corner-btn bottom-left" onclick="toggleModal('controls-modal')">CONTROLS</button>
+        <button class="corner-btn bottom-right" onclick="toggleModal('about-modal')">CREDITS</button>
     </div>
-
-
-</div>
-
-        <button class="btn-main" onclick="startGame()">START GAME</button>
-    </div>
-
-
-
-    <button class="corner-btn top-right" onclick="toggleModal('leaderboard-modal')">HIGH SCORES</button>
-    <button class="corner-btn bottom-left" onclick="toggleModal('controls-modal')">CONTROLS</button>
-    <button class="corner-btn bottom-right" onclick="toggleModal('about-modal')">CREDITS</button>
 </div>
 
 
