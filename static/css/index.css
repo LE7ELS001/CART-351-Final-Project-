@@ -629,6 +629,12 @@ tr:nth-child(3) td {
     object-fit: cover;
     pointer-events: none;
     filter: brightness(0.8) contrast(1.1);
+    display: block;  /* 确保视频可见 */
+}
+
+/* 悬停时视频变亮 */
+.map-card:hover video {
+    filter: brightness(1) contrast(1.2);
 }
 
 .map-name {
