@@ -109,9 +109,9 @@ async function loadLeaderboard() {
 
 
             let rankDisplay = index + 1;
-            if (index === 0) rankDisplay = "🏆 1ST";
-            if (index === 1) rankDisplay = "🥈 2ND";
-            if (index === 2) rankDisplay = "🥉 3RD";
+            if (index === 0) rankDisplay = "ðŸ† 1ST";
+            if (index === 1) rankDisplay = "ðŸ¥ˆ 2ND";
+            if (index === 2) rankDisplay = "ðŸ¥‰ 3RD";
 
             tr.innerHTML = `
                 <td>${rankDisplay}</td>
@@ -140,7 +140,6 @@ async function loadLeaderboard() {
 
 
 // ========== INTRO LOGIC ==========
-// 状态：还在 intro 里吗？BGM 开始了吗？
 let introActive = true;
 let bgmStarted = false;
 
@@ -148,13 +147,21 @@ window.addEventListener("DOMContentLoaded", () => {
     const intro = document.getElementById("sf-intro");
     const bgm = document.getElementById("intro-bgm");
     const subText = document.querySelector(".sf-sub");
+    const logo = document.querySelector(".sf-logo");
+    const crt = document.getElementById("crt-overlay");
+    const copyright = document.getElementById("sf-copyright");
+    const fireRow = document.getElementById("sf-fire-row"); 
+
 
     if (!intro) return;
 
     function handleIntroInteraction() {
-        // 第一次按键/点击：只负责“开始放 BGM”，不关掉 intro
         if (!bgmStarted) {
             bgmStarted = true;
+
+            if (copyright) {
+                copyright.classList.add("show");
+            }
 
             if (bgm) {
                 bgm.currentTime = 0;
@@ -163,15 +170,30 @@ window.addEventListener("DOMContentLoaded", () => {
                 });
             }
 
-            // 提示可以继续（可选）
             if (subText) {
                 subText.textContent = "PRESS ANY KEY";
+                subText.classList.add("sub-on");
             }
 
-            return;
+            if (logo) {
+                logo.classList.add("logo-on");
+            }
+
+            if (intro) {
+                intro.classList.add("intro-on");
+            }
+
+            if (crt) {
+                crt.classList.add("crt-on");
+            }
+
+            if (fireRow) {
+                fireRow.classList.add("show");
+            }
+
+            return; 
         }
 
-        // 第二次及以后：退出 intro（只执行一次）
         if (introActive) {
             introActive = false;
 
@@ -180,7 +202,10 @@ window.addEventListener("DOMContentLoaded", () => {
                 intro.style.display = "none";
             }, 600);
 
-            // 离开 intro 时停止 BGM
+            if (crt) {
+                crt.classList.remove("crt-on"); 
+            }
+
             if (bgm) {
                 bgm.pause();
                 bgm.currentTime = 0;
@@ -188,18 +213,14 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // 按任何键
     window.addEventListener("keydown", () => {
         if (!introActive) return;
         handleIntroInteraction();
     });
 
-    // 点击任何地方
     window.addEventListener("click", () => {
         if (!introActive) return;
         handleIntroInteraction();
     });
 });
-
-
 
