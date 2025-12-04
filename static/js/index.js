@@ -136,3 +136,70 @@ async function loadLeaderboard() {
 //     console.log(players);
 // }
 // loadPlayers();
+
+
+
+// ========== INTRO LOGIC ==========
+// 状态：还在 intro 里吗？BGM 开始了吗？
+let introActive = true;
+let bgmStarted = false;
+
+window.addEventListener("DOMContentLoaded", () => {
+    const intro = document.getElementById("sf-intro");
+    const bgm = document.getElementById("intro-bgm");
+    const subText = document.querySelector(".sf-sub");
+
+    if (!intro) return;
+
+    function handleIntroInteraction() {
+        // 第一次按键/点击：只负责“开始放 BGM”，不关掉 intro
+        if (!bgmStarted) {
+            bgmStarted = true;
+
+            if (bgm) {
+                bgm.currentTime = 0;
+                bgm.play().catch(err => {
+                    console.warn("Intro BGM blocked:", err);
+                });
+            }
+
+            // 提示可以继续（可选）
+            if (subText) {
+                subText.textContent = "PRESS ANY KEY";
+            }
+
+            return;
+        }
+
+        // 第二次及以后：退出 intro（只执行一次）
+        if (introActive) {
+            introActive = false;
+
+            intro.classList.add("fade-out");
+            setTimeout(() => {
+                intro.style.display = "none";
+            }, 600);
+
+            // 离开 intro 时停止 BGM
+            if (bgm) {
+                bgm.pause();
+                bgm.currentTime = 0;
+            }
+        }
+    }
+
+    // 按任何键
+    window.addEventListener("keydown", () => {
+        if (!introActive) return;
+        handleIntroInteraction();
+    });
+
+    // 点击任何地方
+    window.addEventListener("click", () => {
+        if (!introActive) return;
+        handleIntroInteraction();
+    });
+});
+
+
+

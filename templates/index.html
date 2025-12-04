@@ -10,7 +10,22 @@ THE ARENA - LOGIN
 {% endblock %}
 
 {% block content %}
+
 <canvas id="bg-canvas"></canvas>
+
+<!-- Intro -->
+<div id="sf-intro" class="sf-intro">
+    <div class="sf-logo">PIXEL FIGHTER</div>
+    <div class="sf-sub">PRESS START</div>
+</div>
+
+<!-- Intro BGM -->
+<audio
+    id="intro-bgm"
+    src="{{ url_for('static', filename='audio/intro_bgm.mp3') }}"
+    preload="auto"
+    loop
+></audio>
 
 <div class="ui-container">
     <div class="center-panel">
@@ -31,6 +46,7 @@ THE ARENA - LOGIN
 
         <button class="btn-main" onclick="startGame()">START GAME</button>
     </div>
+
 
 
     <button class="corner-btn top-right" onclick="toggleModal('leaderboard-modal')">HIGH SCORES</button>
