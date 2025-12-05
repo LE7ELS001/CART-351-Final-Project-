@@ -49,30 +49,23 @@ window.addEventListener('load', function () {
 
     let currentMap = localStorage.getItem("fighter_map") || "Arizona Desert, U.S.A.mp4";
 
-    // 预加载背景视频但不播放
     if (bgVideo) {
         bgVideo.src = getVideoPath(currentMap);
         bgVideo.load();
     }
 
-    // ⭐ 让所有地图卡片的视频显示随机帧（静态预览）
     mapCards.forEach(card => {
         const mapFile = card.dataset.map;
         const cardVideo = card.querySelector('video');
         
-        // 设置视频显示随机帧作为静态预览
         if (cardVideo) {
             cardVideo.load();
             
-            // 等待视频元数据加载完成后，跳到随机时间点
             cardVideo.addEventListener('loadedmetadata', function() {
-                // 生成随机时间点（视频总时长的 10%-90%）
-                const duration = cardVideo.duration;
-                const randomTime = duration * (0.1 + Math.random() * 0.8);
-                cardVideo.currentTime = randomTime;
+                cardVideo.currentTime = 3; 
             }, { once: true });
             
-            // 确保视频暂停在随机帧
+
             cardVideo.addEventListener('seeked', function() {
                 cardVideo.pause();
             }, { once: true });
@@ -82,36 +75,30 @@ window.addEventListener('load', function () {
             card.classList.add("selected");
         }
         
-        // 点击选择地图
+  
         card.addEventListener("click", () => {
             currentMap = mapFile;
             localStorage.setItem("fighter_map", currentMap);
 
-            // 更新选中状态
+   
             mapCards.forEach(c => c.classList.remove("selected"));
             card.classList.add("selected");
         });
 
-        // ⭐ 鼠标悬停：播放动态视频 + 音频
         card.addEventListener("mouseenter", () => {
             if (cardVideo) {
-                cardVideo.muted = false;  // 取消静音
-                cardVideo.volume = 0.5;   // 音量 50%
-                cardVideo.currentTime = 0; // 从头播放
+                cardVideo.muted = false;  
+                cardVideo.volume = 0.5;   
+                cardVideo.currentTime = 0; 
                 cardVideo.play().catch(err => console.warn("Video hover blocked:", err));
             }
         });
 
-        // ⭐ 鼠标离开：暂停在新的随机帧（恢复静态）
         card.addEventListener("mouseleave", () => {
             if (cardVideo) {
-                // 停止播放并跳到新的随机帧
                 cardVideo.pause();
                 cardVideo.muted = true;
-                
-                const duration = cardVideo.duration;
-                const randomTime = duration * (0.1 + Math.random() * 0.8);
-                cardVideo.currentTime = randomTime;
+                cardVideo.currentTime = 3;  
             }
         });
     });
@@ -213,26 +200,23 @@ let bgmStarted = false;
 
 window.addEventListener("DOMContentLoaded", () => {
     const intro = document.getElementById("sf-intro");
-    const introBgm = document.getElementById("intro-bgm");  // Intro 专用 BGM
-    const bgVideo = document.getElementById("bg-video");    // 地图视频（不在 Intro 播放）
+    const introBgm = document.getElementById("intro-bgm");  
+    const bgVideo = document.getElementById("bg-video");    
     const subText = document.querySelector(".sf-sub");
     const logo = document.querySelector(".sf-logo");
     const crt = document.getElementById("crt-overlay");
     const copyright = document.getElementById("sf-copyright");
 
-    // ⭐ 设置 Intro BGM 音量为 50%
     if (introBgm) {
-        introBgm.volume = 0.5;
+        introBgm.volume = 0.3;
     }
 
     if (!intro) return;
 
     function handleIntroInteraction() {
-        // 第一次点击：播放 Intro BGM
         if (!bgmStarted) {
             bgmStarted = true;
 
-            // ⭐ 只播放 Intro BGM（音量 50%），不播放地图视频
             if (introBgm) {
                 introBgm.play().catch(err => console.warn("Intro BGM blocked:", err));
             }
@@ -261,7 +245,6 @@ window.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // 第二次点击：进入登录界面
         if (introActive) {
             introActive = false;
 
@@ -269,7 +252,6 @@ window.addEventListener("DOMContentLoaded", () => {
             setTimeout(() => {
                 intro.style.display = "none";
                 
-                // ⭐ 显示登录界面
                 const uiContainer = document.querySelector('.ui-container');
                 if (uiContainer) {
                     uiContainer.classList.add('show');
@@ -280,7 +262,6 @@ window.addEventListener("DOMContentLoaded", () => {
                 crt.classList.remove("crt-on");
             }
 
-            // ⭐ 停止 Intro BGM
             if (introBgm) {
                 introBgm.pause();
                 introBgm.currentTime = 0;

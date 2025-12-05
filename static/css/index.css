@@ -17,7 +17,6 @@ body {
     opacity: 0.5;
 }
 
-/* ===== 登录页 UI 外层：居中摆一块屏幕 ===== */
 .ui-container {
     position: fixed;
     inset: 0;
@@ -36,7 +35,6 @@ body {
     visibility: visible;
 }
 
-/* 登录屏幕：大小和 game-screen-container 一样 */
 .login-screen {
     position: relative;
     width: 1024px;
@@ -45,7 +43,6 @@ body {
     box-shadow:
         0 0 0 4px #000,
         0 0 40px rgba(0, 0, 0, 0.85);
-    /* 复古渐变背景，类似 Intro 的风格 */
     background: linear-gradient(180deg, 
         rgba(20, 20, 30, 0.98) 0%,
         rgba(10, 10, 15, 0.98) 50%,
@@ -579,7 +576,7 @@ tr:nth-child(3) td {
     100% { opacity: 0.9; }
 }
 
-/* ===== background video - 完全隐藏 ===== */
+/* ===== background video ===== */
 .bg-video {
     position: fixed;
     top: 0;
@@ -590,8 +587,8 @@ tr:nth-child(3) td {
     z-index: 0;             
     filter: brightness(0.7) contrast(1.2);
     pointer-events: none;
-    opacity: 0;  /* 默认完全隐藏 */
-    display: none;  /* Intro 和登录界面都不显示 */
+    opacity: 0;  
+    display: none;  
 }
 
 
@@ -629,10 +626,9 @@ tr:nth-child(3) td {
     object-fit: cover;
     pointer-events: none;
     filter: brightness(0.8) contrast(1.1);
-    display: block;  /* 确保视频可见 */
+    display: block;  
 }
 
-/* 悬停时视频变亮 */
 .map-card:hover video {
     filter: brightness(1) contrast(1.2);
 }
