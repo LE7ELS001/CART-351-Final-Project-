@@ -2,6 +2,7 @@ function getVideoPath(fileName) {
     return `/static/assets/background/${fileName}`;
 }
 
+
 let myId = localStorage.getItem("fighter_id");
 let myName = localStorage.getItem("fighter_name");
 
@@ -109,11 +110,18 @@ if (gameBgVideo) {
 
 // c.fillRect(0, 0, canvas.width, canvas.height);
 
-//players 
+//players
+// const gravity = 0.3;
+// const moveSpeed = 3;
+// const jumpDistance = 12;
+// const damage = 20;
+
 const gravity = 0.3;
 const moveSpeed = 3;
 const jumpDistance = 12;
 const damage = 20;
+
+let lastTime = 0;
 
 //game state
 let isGameActive = true;
@@ -527,8 +535,18 @@ const keys = {
 
 let lastState = players[playerId].state;
 
-function animate() {
+function animate(timestamp) {
     window.requestAnimationFrame(animate);
+
+    //timestamp
+    if (!lastTime) lastTime = timestamp;
+    const deltaTime = (timestamp - lastTime) / 1000;
+    lastTime = timestamp;
+
+    // 防止切换标签页后 deltaTime 变得巨大导致瞬移
+    if (deltaTime > 0.1) {
+        return;
+    }
 
     // 每帧检查 BGM
     if (!isMatchEnded && gameBgVideo && gameBgVideo.paused) {
@@ -561,8 +579,19 @@ function animate() {
 
     }
 
+    if (isGameActive && players[playerId]) {
+        const me = players[playerId];
+        me.velocity.x = 0;
 
-    Object.values(players).forEach(player => player.update());
+        if (keys.a.pressed && me.lastKey === 'a') {
+            me.velocity.x = -moveSpeed;
+        } else if (keys.d.pressed && me.lastKey === 'd') {
+            me.velocity.x = moveSpeed;
+        }
+    }
+
+
+    Object.values(players).forEach(player => player.update(deltaTime));
 
     const me = players[playerId];
 
@@ -689,19 +718,19 @@ window.addEventListener('keyup', (event) => {
     }
 });
 
-setInterval(() => {
-    const player = players[playerId];
+// setInterval(() => {
+//     const player = players[playerId];
 
-    if (!isGameActive) {
-        player.velocity.x = 0;
-        return;
-    }
+//     if (!isGameActive) {
+//         player.velocity.x = 0;
+//         return;
+//     }
 
-    //move speed 
-    player.velocity.x = 0;
-    if (keys.a.pressed && player.lastKey === 'a') {
-        player.velocity.x = -moveSpeed;
-    } else if (keys.d.pressed && player.lastKey === 'd') {
-        player.velocity.x = moveSpeed;
-    }
-}, 16);
+//     //move speed
+//     player.velocity.x = 0;
+//     if (keys.a.pressed && player.lastKey === 'a') {
+//         player.velocity.x = -moveSpeed;
+//     } else if (keys.d.pressed && player.lastKey === 'd') {
+//         player.velocity.x = moveSpeed;
+//     }
+// }, 16);
