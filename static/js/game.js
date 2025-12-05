@@ -34,12 +34,15 @@ function ensureBgmPlaying() {
     if (gameBgVideo && !isMatchEnded && gameBgVideo.paused) {
         console.log("BGM is paused, force playing...");
         
+        // 尝试多次播放，直到成功
         const playPromise = gameBgVideo.play();
         
         if (playPromise !== undefined) {
             playPromise.then(() => {
+                // 播放成功
             }).catch(err => {
                 console.warn("BGM resume failed:", err);
+                // 失败后 100ms 再试一次
                 setTimeout(() => {
                     if (!isMatchEnded && gameBgVideo.paused) {
                         gameBgVideo.play().catch(() => {});
@@ -221,6 +224,28 @@ socket.on("assign_side", ({ playerId, side, x, y, name, color }) => {
     me.position.x = x;
     me.position.y = y;
     me.name = name;
+    
+    // 如果是右侧玩家，应用反差色
+    if (side === 'right') {
+        me.invertColor = true;
+        
+        // 重新生成所有精灵的反差色图像
+        for (const key in me.sprites) {
+            const obj = me.sprites[key];
+            if (obj.image && obj.image.complete) {
+                obj.tintedImage = me.generateTintedImage(obj.image);
+                if (me.state === key) {
+                    me.image = obj.tintedImage;
+                }
+            }
+        }
+        
+        // 重新生成主图像
+        if (me.image && me.image.complete) {
+            const originalImage = me.image;
+            me.image = me.generateTintedImage(originalImage);
+        }
+    }
 
     console.log("Assigned side is :", side);
 
@@ -253,6 +278,7 @@ socket.on("player_join", (data) => {
             position: { x: data.x, y: data.y },
             velocity: { x: 0, y: 0 },
             color: data.color,
+            invertColor: data.side === 'right',
             ...SAMURAI_CONFIG
 
         });
@@ -266,6 +292,7 @@ socket.on("player_join", (data) => {
 socket.on("player_move", (data) => {
     if (data.playerId === playerId) return;
     
+    // Socket 事件可能干扰视频，立即检查
     ensureBgmPlaying();
 
     if (players[data.playerId]) {
@@ -283,6 +310,7 @@ socket.on("existing_players", (playersList) => {
                 position: { x: p.x, y: p.y },
                 velocity: { x: 0, y: 0 },
                 color: p.color,
+                invertColor: p.side === 'right',
                 ...SAMURAI_CONFIG
 
             });
@@ -334,6 +362,7 @@ socket.on("reset_positions", () => {
 
     isMatchEnded = false;
     
+    // 确保 BGM 播放
     ensureBgmPlaying();
 
     document.getElementById("result-overlay").style.display = "none";
@@ -374,6 +403,7 @@ socket.on("game_state", (data) => {
 
     isGameActive = data.active;
     
+    // 确保 BGM 继续播放
     ensureBgmPlaying();
 
     if (!isGameActive) {
@@ -390,7 +420,8 @@ socket.on("game_state", (data) => {
 // timer
 socket.on("timer_update", (data) => {
     const timerElement = document.getElementById("Timer");
-
+    
+    // 确保 BGM 播放
     ensureBgmPlaying();
 
     if (timerElement) {
@@ -499,6 +530,7 @@ let lastState = players[playerId].state;
 function animate() {
     window.requestAnimationFrame(animate);
     
+    // 每帧检查 BGM
     if (!isMatchEnded && gameBgVideo && gameBgVideo.paused) {
         gameBgVideo.play().catch(() => {});
     }
@@ -561,6 +593,7 @@ function animate() {
         me.hasHitThisFrame = false;
     }
     
+    // 减少网络通信频率，每 3 帧发送一次 (约每秒 20 次)
     if (!me.networkFrameCount) me.networkFrameCount = 0;
     me.networkFrameCount++;
 
@@ -637,7 +670,8 @@ window.addEventListener('keydown', (event) => {
 })
 
 window.addEventListener('keyup', (event) => {
-
+    
+    // BGM 保护始终生效
     ensureBgmPlaying();
     
     const me = players[playerId];

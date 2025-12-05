@@ -46,10 +46,24 @@ RONIN SHOWDOWN - LOGIN
             </div>
 
             <div class="input-group">
-                <label>SELECT COLOR</label>
-                <div class="color-picker-wrapper">
-                    <input type="color" id="userColor" value="#ffffff">
-                    <span style="font-size: 10px; color: #bbbbbb;">&lt;- CLICK TO CHANGE</span>
+                <label>SELECT WARRIOR</label>
+                <div class="warrior-selector">
+                    <button class="warrior-btn selected" data-warrior="A" data-color="#ff0000">
+                        <span class="warrior-letter">A</span>
+                        <span class="warrior-name">RED CAPE</span>
+                    </button>
+                    <button class="warrior-btn" data-warrior="B" data-color="#0000ff">
+                        <span class="warrior-letter">B</span>
+                        <span class="warrior-name">BLUE CAPE</span>
+                    </button>
+                    <button class="warrior-btn" data-warrior="C" data-color="#00ff00">
+                        <span class="warrior-letter">C</span>
+                        <span class="warrior-name">GREEN CAPE</span>
+                    </button>
+                    <button class="warrior-btn" data-warrior="D" data-color="#ffff00">
+                        <span class="warrior-letter">D</span>
+                        <span class="warrior-name">GOLD CAPE</span>
+                    </button>
                 </div>
             </div>
 
@@ -167,7 +181,7 @@ RONIN SHOWDOWN - LOGIN
         <span class="close-btn" onclick="toggleModal('about-modal')">X</span>
         <h2>PROJECT INFO</h2>
         <p style="margin-top: 30px; line-height: 1.8;">CART 351 - PROJECT III<br>EXPLORABLE NETWORKED
-            SPACE<br><br>CREATED BY: <strong>[Tianshun Wu] [Junming He]</strong><br>© 2025 CART 351</p>
+            SPACE<br><br>CREATED BY: <strong>[YOUR NAME]</strong><br>2025</p>
     </div>
 </div>
 {% endblock %}

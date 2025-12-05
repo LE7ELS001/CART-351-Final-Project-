@@ -39,10 +39,38 @@ window.addEventListener('load', function () {
         if (nameInput) nameInput.value = storedName;
     }
 
+    // Warrior selection
+    let selectedWarrior = 'A';
+    let selectedColor = '#ff0000';
+    
     if (storedColor) {
-        const colorInput = document.getElementById('userColor');
-        if (colorInput) colorInput.value = storedColor;
+        // Find matching warrior or default to A
+        const warriorBtns = document.querySelectorAll('.warrior-btn');
+        let found = false;
+        warriorBtns.forEach(btn => {
+            if (btn.dataset.color === storedColor) {
+                selectedWarrior = btn.dataset.warrior;
+                selectedColor = storedColor;
+                btn.classList.add('selected');
+                found = true;
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
+        if (!found && warriorBtns[0]) {
+            warriorBtns[0].classList.add('selected');
+        }
     }
+    
+    // Warrior button click handlers
+    document.querySelectorAll('.warrior-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.warrior-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedWarrior = btn.dataset.warrior;
+            selectedColor = btn.dataset.color;
+        });
+    });
 
     const bgVideo = document.getElementById("bg-video");
     const mapCards = document.querySelectorAll(".map-card");
@@ -107,12 +135,13 @@ window.addEventListener('load', function () {
 
 window.startGame = async function () {
     const nameInput = document.getElementById('username');
-    const colorInput = document.getElementById('userColor');
 
-    if (!nameInput || !colorInput) return;
+    if (!nameInput) return;
 
     const name = nameInput.value.trim();
-    const color = colorInput.value;
+    const selectedBtn = document.querySelector('.warrior-btn.selected');
+    const color = selectedBtn ? selectedBtn.dataset.color : '#ff0000';
+    const warrior = selectedBtn ? selectedBtn.dataset.warrior : 'A';
 
     if (!name) {
         alert("INSERT COIN (ENTER NAME)!");
@@ -122,6 +151,7 @@ window.startGame = async function () {
     //Save data in LocalStorage
     localStorage.setItem("fighter_name", name);
     localStorage.setItem("fighter_color", color);
+    localStorage.setItem("fighter_warrior", warrior);
 
     try {
         await fetch("/api/enter", {

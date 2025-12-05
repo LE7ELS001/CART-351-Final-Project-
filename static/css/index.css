@@ -120,33 +120,75 @@ input[type="text"]:focus {
         inset 0 0 10px rgba(255, 204, 51, 0.1);
 }
 
-.color-picker-wrapper {
+/* Warrior Selector - 一行 4 列 */
+.warrior-selector {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+
+.warrior-btn {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 14px;
-    border: 4px solid #ffffff;
-    padding: 6px;
+    justify-content: center;
+    padding: 8px 4px;
     background: #000;
-}
-
-
-input[type="color"] {
-    -webkit-appearance: none;
-    border: none;
-    width: 36px;
-    height: 36px;
+    border: 3px solid #666;
     cursor: pointer;
-    background: none;
-    padding: 0;
+    transition: all 0.2s;
+    font-family: 'Press Start 2P', cursive;
+    color: #999;
+    min-height: 60px;
 }
 
-input[type="color"]::-webkit-color-swatch-wrapper {
-    padding: 0;
+.warrior-btn:hover {
+    border-color: #ffffff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
 }
 
-input[type="color"]::-webkit-color-swatch {
-    border: 4px solid #ffffff;
-    box-sizing: border-box;
+.warrior-btn.selected {
+    border-color: #ffcc33;
+    background: rgba(255, 204, 51, 0.1);
+    box-shadow: 0 0 15px rgba(255, 204, 51, 0.5);
+    color: #ffcc33;
+}
+
+.warrior-letter {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 4px;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.warrior-btn.selected .warrior-letter {
+    text-shadow: 
+        2px 2px 0 #000,
+        0 0 10px rgba(255, 204, 51, 0.8);
+}
+
+.warrior-name {
+    font-size: 7px;
+    letter-spacing: 0.5px;
+    text-align: center;
+}
+
+/* Warrior color indicators - 只显示披风颜色 */
+.warrior-btn[data-warrior="A"] .warrior-letter {
+    color: #ff0000;
+}
+
+.warrior-btn[data-warrior="B"] .warrior-letter {
+    color: #0000ff;
+}
+
+.warrior-btn[data-warrior="C"] .warrior-letter {
+    color: #00ff00;
+}
+
+.warrior-btn[data-warrior="D"] .warrior-letter {
+    color: #ffff00;
 }
 
 .btn-main {
@@ -615,7 +657,7 @@ tr:nth-child(3) td {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 6px;
-    max-height: 240px;
+    max-height: 200px;
     overflow-y: auto;  
 }
 

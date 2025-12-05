@@ -1,6 +1,3 @@
-
-
-
 //Sprite class
 class Sprite {
     constructor({ position, imageSrc, scale = 1, framesMax = 1, offset = { x: 0, y: 0 } }) {
@@ -72,7 +69,8 @@ class Player extends Sprite {
         framesMax = 1,
         offset = { x: 0, y: 0 },
         sprites,
-        color = '#ffffff'
+        color = '#ffffff',
+        invertColor = false
 
     }) {
         super({
@@ -112,6 +110,7 @@ class Player extends Sprite {
         this.state = 'idle';
 
         this.color = color
+        this.invertColor = invertColor
 
         this.frameCurrent = 0
         this.framesElapsed = 0
@@ -152,31 +151,88 @@ class Player extends Sprite {
     }
 
     generateTintedImage(img) {
-        //return original sprite
-        if (!this.color || this.color === '#ffffff') {
-            return img
+        if (!this.color || this.color === '#ffffff' || this.color === '#ff0000') {
+            if (this.invertColor) {
+                return this.invertImageColors(img);
+            }
+            return img;
         }
 
-        //create a new canvas
         const buffer = document.createElement('canvas');
         buffer.width = img.width;
         buffer.height = img.height;
         const ctx = buffer.getContext('2d');
 
-        //draw the img in the new canvas(buffer)
         ctx.drawImage(img, 0, 0);
 
-        //set the composite operation( only affect the existing parts, ignore the transparent background)
-        ctx.globalCompositeOperation = 'source-atop'
+        const imageData = ctx.getImageData(0, 0, buffer.width, buffer.height);
+        const data = imageData.data;
 
-        //fill with player choose color
-        ctx.fillStyle = this.color;
-        ctx.globalAlpha = 0.5;
-        ctx.fillRect(0, 0, buffer.width, buffer.height);
+        const targetColor = this.hexToRgb(this.color);
 
-        ctx.globalAlpha = 1.0
-        ctx.globalCompositeOperation = 'source-over';
+        for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            const a = data[i + 3];
 
+            if (a > 0) {
+                const isRed = r > g && r > b && 
+                              r > 120 && 
+                              g < 100 && b < 100 &&
+                              (r - g) > 50 && (r - b) > 50;
+                
+                if (isRed) {
+                    const intensity = r / 255;
+                    
+                    data[i] = targetColor.r * intensity;
+                    data[i + 1] = targetColor.g * intensity;
+                    data[i + 2] = targetColor.b * intensity;
+                }
+            }
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+        
+        // Apply invert if needed
+        if (this.invertColor) {
+            return this.invertImageColors(buffer);
+        }
+
+        return buffer;
+    }
+    
+    hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : { r: 255, g: 0, b: 0 };
+    }
+    
+    invertImageColors(img) {
+        const buffer = document.createElement('canvas');
+        buffer.width = img.width;
+        buffer.height = img.height;
+        const ctx = buffer.getContext('2d');
+        
+        ctx.drawImage(img, 0, 0);
+        
+        const imageData = ctx.getImageData(0, 0, buffer.width, buffer.height);
+        const data = imageData.data;
+        
+        for (let i = 0; i < data.length; i += 4) {
+            // Skip transparent pixels
+            if (data[i + 3] > 0) {
+                data[i] = 255 - data[i];         // Red
+                data[i + 1] = 255 - data[i + 1]; // Green
+                data[i + 2] = 255 - data[i + 2]; // Blue
+                // Alpha (data[i + 3]) stays the same
+            }
+        }
+        
+        ctx.putImageData(imageData, 0, 0);
         return buffer;
     }
 
