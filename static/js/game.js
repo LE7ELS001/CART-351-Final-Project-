@@ -33,10 +33,10 @@ const chosenMap = localStorage.getItem("fighter_map") || "Arizona Desert, U.S.A.
 function ensureBgmPlaying() {
     if (gameBgVideo && !isMatchEnded && gameBgVideo.paused) {
         console.log("BGM is paused, force playing...");
-        
+
         // 尝试多次播放，直到成功
         const playPromise = gameBgVideo.play();
-        
+
         if (playPromise !== undefined) {
             playPromise.then(() => {
                 // 播放成功
@@ -45,7 +45,7 @@ function ensureBgmPlaying() {
                 // 失败后 100ms 再试一次
                 setTimeout(() => {
                     if (!isMatchEnded && gameBgVideo.paused) {
-                        gameBgVideo.play().catch(() => {});
+                        gameBgVideo.play().catch(() => { });
                     }
                 }, 100);
             });
@@ -64,41 +64,41 @@ if (gameBgVideo) {
     gameBgVideo.setAttribute('playsinline', '');
     gameBgVideo.setAttribute('webkit-playsinline', '');
     gameBgVideo.load();
-    
+
     gameBgVideo.addEventListener('loadeddata', () => {
         gameBgVideo.play().catch(err => console.warn("BGM autoplay blocked:", err));
     });
-    
+
     gameBgVideo.addEventListener('pause', () => {
         if (!isMatchEnded) {
             console.log("BGM pause event detected, resuming in 10ms...");
             setTimeout(ensureBgmPlaying, 10);
         }
     });
-    
+
     gameBgVideo.addEventListener('ended', () => {
         if (!isMatchEnded) {
             console.log("BGM ended, restarting...");
             gameBgVideo.play().catch(err => console.warn("BGM restart failed:", err));
         }
     });
-    
+
     setInterval(ensureBgmPlaying, 50);
-    
+
     document.addEventListener('visibilitychange', () => {
         if (!document.hidden && !isMatchEnded) {
             console.log("Page visible again, ensuring BGM...");
             setTimeout(ensureBgmPlaying, 50);
         }
     });
-    
+
     window.addEventListener('focus', () => {
         if (!isMatchEnded) {
             console.log("Window focused, ensuring BGM...");
             setTimeout(ensureBgmPlaying, 50);
         }
     });
-    
+
     window.addEventListener('blur', () => {
         if (!isMatchEnded) {
             console.log("Window blurred, ensuring BGM...");
@@ -224,11 +224,11 @@ socket.on("assign_side", ({ playerId, side, x, y, name, color }) => {
     me.position.x = x;
     me.position.y = y;
     me.name = name;
-    
+
     // 如果是右侧玩家，应用反差色
     if (side === 'right') {
         me.invertColor = true;
-        
+
         // 重新生成所有精灵的反差色图像
         for (const key in me.sprites) {
             const obj = me.sprites[key];
@@ -239,7 +239,7 @@ socket.on("assign_side", ({ playerId, side, x, y, name, color }) => {
                 }
             }
         }
-        
+
         // 重新生成主图像
         if (me.image && me.image.complete) {
             const originalImage = me.image;
@@ -256,14 +256,14 @@ socket.on("assign_side", ({ playerId, side, x, y, name, color }) => {
 
 socket.on("set_map", ({ map }) => {
     console.log("Server assigned map:", map);
-    
+
     if (gameBgVideo) {
         gameBgVideo.src = getVideoPath(map);
         gameBgVideo.muted = false;
         gameBgVideo.loop = true;
         gameBgVideo.volume = 1.0;
         gameBgVideo.load();
-        
+
         gameBgVideo.addEventListener('loadeddata', () => {
             console.log("Map loaded, starting BGM...");
             gameBgVideo.play().catch(err => console.warn("Map BGM play blocked:", err));
@@ -291,8 +291,8 @@ socket.on("player_join", (data) => {
 
 socket.on("player_move", (data) => {
     if (data.playerId === playerId) return;
-    
-    // Socket 事件可能干扰视频，立即检查
+
+
     ensureBgmPlaying();
 
     if (players[data.playerId]) {
@@ -330,7 +330,7 @@ socket.on("player_leave", (data) => {
 
 socket.on("state_change", ({ playerId, state }) => {
     ensureBgmPlaying();
-    
+
     if (players[playerId]) {
         players[playerId].setState(state);
     }
@@ -338,7 +338,7 @@ socket.on("state_change", ({ playerId, state }) => {
 
 socket.on('player_attack', ({ playerId }) => {
     ensureBgmPlaying();
-    
+
     if (players[playerId]) {
         players[playerId].attack();
     }
@@ -361,7 +361,7 @@ socket.on("update_hp", ({ playerId, hp }) => {
 socket.on("reset_positions", () => {
 
     isMatchEnded = false;
-    
+
     // 确保 BGM 播放
     ensureBgmPlaying();
 
@@ -402,7 +402,7 @@ socket.on("game_state", (data) => {
     console.log("Game active state:", data.active);
 
     isGameActive = data.active;
-    
+
     // 确保 BGM 继续播放
     ensureBgmPlaying();
 
@@ -420,7 +420,7 @@ socket.on("game_state", (data) => {
 // timer
 socket.on("timer_update", (data) => {
     const timerElement = document.getElementById("Timer");
-    
+
     // 确保 BGM 播放
     ensureBgmPlaying();
 
@@ -445,7 +445,7 @@ socket.on("game_over", (data) => {
     isGameActive = false;
 
     isMatchEnded = true;
-    
+
     if (gameBgVideo) {
         gameBgVideo.pause();
         gameBgVideo.currentTime = 0;
@@ -529,10 +529,10 @@ let lastState = players[playerId].state;
 
 function animate() {
     window.requestAnimationFrame(animate);
-    
+
     // 每帧检查 BGM
     if (!isMatchEnded && gameBgVideo && gameBgVideo.paused) {
-        gameBgVideo.play().catch(() => {});
+        gameBgVideo.play().catch(() => { });
     }
 
     c.clearRect(0, 0, canvas.width, canvas.height);
@@ -592,7 +592,7 @@ function animate() {
     if (me.frameCurrent !== 4) {
         me.hasHitThisFrame = false;
     }
-    
+
     // 减少网络通信频率，每 3 帧发送一次 (约每秒 20 次)
     if (!me.networkFrameCount) me.networkFrameCount = 0;
     me.networkFrameCount++;
@@ -621,7 +621,7 @@ function animate() {
 animate();
 
 window.addEventListener('keydown', (event) => {
-    
+
     // BGM 保护始终生效，不管游戏是否激活
     ensureBgmPlaying();
 
@@ -670,10 +670,10 @@ window.addEventListener('keydown', (event) => {
 })
 
 window.addEventListener('keyup', (event) => {
-    
+
     // BGM 保护始终生效
     ensureBgmPlaying();
-    
+
     const me = players[playerId];
 
     if (event.key === "j") {

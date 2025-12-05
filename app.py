@@ -31,8 +31,8 @@ spawn_positionsX_left = 100
 spawn_positionsX_right = 700
 
 #Timer 
-game_timer = 10
-game_timer_refresh = 10
+game_timer = 60
+game_timer_refresh = 60
 game_active = False
 timer_running = False
 timer_thread = None

@@ -177,14 +177,14 @@ class Player extends Sprite {
             const a = data[i + 3];
 
             if (a > 0) {
-                const isRed = r > g && r > b && 
-                              r > 120 && 
-                              g < 100 && b < 100 &&
-                              (r - g) > 50 && (r - b) > 50;
-                
+                const isRed = r > g && r > b &&
+                    r > 120 &&
+                    g < 100 && b < 100 &&
+                    (r - g) > 50 && (r - b) > 50;
+
                 if (isRed) {
                     const intensity = r / 255;
-                    
+
                     data[i] = targetColor.r * intensity;
                     data[i + 1] = targetColor.g * intensity;
                     data[i + 2] = targetColor.b * intensity;
@@ -193,7 +193,7 @@ class Player extends Sprite {
         }
 
         ctx.putImageData(imageData, 0, 0);
-        
+
         // Apply invert if needed
         if (this.invertColor) {
             return this.invertImageColors(buffer);
@@ -201,7 +201,7 @@ class Player extends Sprite {
 
         return buffer;
     }
-    
+
     hexToRgb(hex) {
         const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         return result ? {
@@ -210,18 +210,18 @@ class Player extends Sprite {
             b: parseInt(result[3], 16)
         } : { r: 255, g: 0, b: 0 };
     }
-    
+
     invertImageColors(img) {
         const buffer = document.createElement('canvas');
         buffer.width = img.width;
         buffer.height = img.height;
         const ctx = buffer.getContext('2d');
-        
+
         ctx.drawImage(img, 0, 0);
-        
+
         const imageData = ctx.getImageData(0, 0, buffer.width, buffer.height);
         const data = imageData.data;
-        
+
         for (let i = 0; i < data.length; i += 4) {
             // Skip transparent pixels
             if (data[i + 3] > 0) {
@@ -231,7 +231,7 @@ class Player extends Sprite {
                 // Alpha (data[i + 3]) stays the same
             }
         }
-        
+
         ctx.putImageData(imageData, 0, 0);
         return buffer;
     }
@@ -289,6 +289,28 @@ class Player extends Sprite {
         // if (this.state === 'attack') c.fillStyle = 'purple'
         // c.fillRect(this.position.x, this.position.y, this.width, this.height)
 
+        //shadow
+        const groundY = 515;
+        const centerX = this.position.x + this.width / 2;
+        const feetY = this.position.y + this.height;
+        const distanceToGround = Math.max(0, groundY - feetY);
+
+        let shadowScale = 1 - (distanceToGround / 300);
+        if (shadowScale < 0.2) shadowScale = 0.2;
+
+        c.beginPath();
+        c.fillStyle = `rgba(0, 0, 0, ${0.5 * shadowScale})`;
+
+        c.ellipse(
+            centerX,
+            groundY + 2,
+            40 * shadowScale,
+            12 * shadowScale,
+            0, 0, Math.PI * 2
+        );
+        c.fill();
+        c.closePath();
+
         c.save();
 
         if (this.facing === 'left') {
@@ -309,12 +331,12 @@ class Player extends Sprite {
 
 
         //attack box
-        if (this.isAttacking) {
-            if (this.frameCurrent === 4) {
-                c.fillStyle = 'green';
-                c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
-            }
-        }
+        // if (this.isAttacking) {
+        //     if (this.frameCurrent === 4) {
+        //         c.fillStyle = 'green';
+        //         c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
+        //     }
+        // }
     }
 
     update() {
