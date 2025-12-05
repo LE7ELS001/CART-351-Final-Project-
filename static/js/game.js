@@ -30,12 +30,65 @@ canvas.height = 576;
 const gameBgVideo = document.getElementById("game-bg-video");
 const chosenMap = localStorage.getItem("fighter_map") || "Arizona Desert, U.S.A.mp4";
 
+function ensureBgmPlaying() {
+    if (gameBgVideo && !isMatchEnded && gameBgVideo.paused) {
+        console.log("BGM is paused, force playing...");
+        gameBgVideo.play().catch(err => console.warn("BGM resume failed:", err));
+    }
+}
+
 if (gameBgVideo) {
     gameBgVideo.src = getVideoPath(chosenMap);
-    gameBgVideo.load();
-    gameBgVideo.play().catch(err => console.warn("Game video autoplay blocked:", err));
-    
     gameBgVideo.muted = false;
+    gameBgVideo.loop = true;
+    gameBgVideo.volume = 1.0;
+    gameBgVideo.autoplay = true;
+    gameBgVideo.playsInline = true;
+    gameBgVideo.preload = "auto";
+    gameBgVideo.setAttribute('playsinline', '');
+    gameBgVideo.setAttribute('webkit-playsinline', '');
+    gameBgVideo.load();
+    
+    gameBgVideo.addEventListener('loadeddata', () => {
+        gameBgVideo.play().catch(err => console.warn("BGM autoplay blocked:", err));
+    });
+    
+    gameBgVideo.addEventListener('pause', () => {
+        if (!isMatchEnded) {
+            console.log("BGM pause event detected, resuming in 10ms...");
+            setTimeout(ensureBgmPlaying, 10);
+        }
+    });
+    
+    gameBgVideo.addEventListener('ended', () => {
+        if (!isMatchEnded) {
+            console.log("BGM ended, restarting...");
+            gameBgVideo.play().catch(err => console.warn("BGM restart failed:", err));
+        }
+    });
+    
+    setInterval(ensureBgmPlaying, 50);
+    
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && !isMatchEnded) {
+            console.log("Page visible again, ensuring BGM...");
+            setTimeout(ensureBgmPlaying, 50);
+        }
+    });
+    
+    window.addEventListener('focus', () => {
+        if (!isMatchEnded) {
+            console.log("Window focused, ensuring BGM...");
+            setTimeout(ensureBgmPlaying, 50);
+        }
+    });
+    
+    window.addEventListener('blur', () => {
+        if (!isMatchEnded) {
+            console.log("Window blurred, ensuring BGM...");
+            setTimeout(ensureBgmPlaying, 50);
+        }
+    });
 }
 
 // c.fillRect(0, 0, canvas.width, canvas.height);
@@ -134,6 +187,7 @@ socket.emit("join", {
     playerName: playerName,
     playerId: playerId,
     color: playerColor,
+    map: chosenMap,
     x: players[playerId].position.x,
     y: players[playerId].position.y,
 
@@ -155,12 +209,28 @@ socket.on("assign_side", ({ playerId, side, x, y, name, color }) => {
     me.position.y = y;
     me.name = name;
 
-    //debug 
     console.log("Assigned side is :", side);
 
     updateUIForSide(side);
 
     updateNameTag(side, name);
+});
+
+socket.on("set_map", ({ map }) => {
+    console.log("Server assigned map:", map);
+    
+    if (gameBgVideo) {
+        gameBgVideo.src = getVideoPath(map);
+        gameBgVideo.muted = false;
+        gameBgVideo.loop = true;
+        gameBgVideo.volume = 1.0;
+        gameBgVideo.load();
+        
+        gameBgVideo.addEventListener('loadeddata', () => {
+            console.log("Map loaded, starting BGM...");
+            gameBgVideo.play().catch(err => console.warn("Map BGM play blocked:", err));
+        }, { once: true });
+    }
 });
 
 //new player joined 
@@ -245,6 +315,8 @@ socket.on("reset_positions", () => {
 
     isMatchEnded = false;
 
+    ensureBgmPlaying();
+
     document.getElementById("result-overlay").style.display = "none";
     document.getElementById("result-title").classList.remove("title-victory", "title-defeat", "title-draw");
 
@@ -282,6 +354,8 @@ socket.on("game_state", (data) => {
     console.log("Game active state:", data.active);
 
     isGameActive = data.active;
+    
+    ensureBgmPlaying();
 
     if (!isGameActive) {
         //stop all the player and reset the state to idle
@@ -297,6 +371,8 @@ socket.on("game_state", (data) => {
 // timer
 socket.on("timer_update", (data) => {
     const timerElement = document.getElementById("Timer");
+    
+    ensureBgmPlaying();
 
     if (timerElement) {
         timerElement.innerText = data.time;
@@ -319,6 +395,11 @@ socket.on("game_over", (data) => {
     isGameActive = false;
 
     isMatchEnded = true;
+    
+    if (gameBgVideo) {
+        gameBgVideo.pause();
+        gameBgVideo.currentTime = 0;
+    }
 
     setTimeout(() => {
 
@@ -482,6 +563,8 @@ animate();
 
 window.addEventListener('keydown', (event) => {
 
+    ensureBgmPlaying();
+
     //game active check 
     if (!isGameActive) return;
 
@@ -527,6 +610,9 @@ window.addEventListener('keydown', (event) => {
 })
 
 window.addEventListener('keyup', (event) => {
+    
+    ensureBgmPlaying();
+    
     const me = players[playerId];
 
     if (event.key === "j") {

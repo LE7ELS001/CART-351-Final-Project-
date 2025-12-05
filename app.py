@@ -23,6 +23,9 @@ connected_players = {}
 #player health 
 player_hp = {}
 
+#current match map
+current_match_map = None
+
 #spawn position 
 spawn_positionsX_left = 100
 spawn_positionsX_right = 700
@@ -59,10 +62,11 @@ def record_win_loss(winner_id, loser_id):
 
 #------------- reset game ----------------
 def reset_round_state():
-    global game_active, player_hp
+    global game_active, player_hp, current_match_map
 
     print('---------- Reset game to next round ---------')
     player_hp.clear()
+    current_match_map = None
 
     for sid, player in list(connected_players.items()):
         if(player['side'] in ['left', 'right']):
@@ -227,12 +231,12 @@ def on_connect():
 @socketio.on("join")
 def on_join(data):
     
-    global timer_running
+    global timer_running, current_match_map
 
     playerId = data["playerId"]
     playerName = data.get("playerName", "Unknown")
-
     playerColor = data.get("color", "#ffffff")
+    playerMap = data.get("map", "Arizona Desert, U.S.A.mp4")
 
     sid = request.sid
 
@@ -251,7 +255,8 @@ def on_join(data):
     #assign spawn position
     if 'left' not in active_sides:
         assigned_side = "left"
-        spawn_x = spawn_positionsX_left    
+        spawn_x = spawn_positionsX_left
+        current_match_map = playerMap    
     elif 'right' not in active_sides:
         assigned_side = "right"
         spawn_x = spawn_positionsX_right
@@ -275,6 +280,9 @@ def on_join(data):
         "y": 0
     }, to=sid)
 
+    #send map to second player
+    if current_match_map:
+        emit("set_map", {"map": current_match_map}, to=sid)
     
     if assigned_side != 'spectator':
         player_hp[playerId] = 100
@@ -282,6 +290,8 @@ def on_join(data):
     #debug
     #print("Player joined:", data["playerId"], "||with SID:", sid)
     print(f"Player joined: {playerName} ({assigned_side})")
+    if current_match_map:
+        print(f"Current match map: {current_match_map}")
 
     # send existing players to the newly connected player
     emit("existing_players", list(connected_players.values()), to=sid)
