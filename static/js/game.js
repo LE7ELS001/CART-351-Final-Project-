@@ -116,9 +116,9 @@ if (gameBgVideo) {
 // const jumpDistance = 12;
 // const damage = 20;
 
-const gravity = 0.3;
-const moveSpeed = 3;
-const jumpDistance = 12;
+const gravity = 0.8;
+const moveSpeed = 8;
+const jumpDistance = 18;
 const damage = 20;
 
 let lastTime = 0;

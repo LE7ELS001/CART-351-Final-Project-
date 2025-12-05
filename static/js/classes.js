@@ -114,7 +114,7 @@ class Player extends Sprite {
 
         this.frameCurrent = 0
         this.framesElapsed = 0
-        this.framesHold = 15
+        this.framesHold = 5
         this.sprites = sprites || {}
 
         //color (copy sprites data)
