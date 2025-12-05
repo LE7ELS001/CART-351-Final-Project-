@@ -7,6 +7,10 @@ const p_width = 50;
 
 const collisionBoxOffsetY = 30;
 
+const targetFPS = 60;
+const frameInterval = 1000 / targetFPS;
+let lastFrameTime = 0;
+
 //dectect for collision 
 function rectCollision({ rect1, rect2 }) {
     return (

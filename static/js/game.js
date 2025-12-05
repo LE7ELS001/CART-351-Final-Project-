@@ -539,109 +539,122 @@ function animate(timestamp) {
     window.requestAnimationFrame(animate);
 
     //timestamp
-    if (!lastTime) lastTime = timestamp;
-    const deltaTime = (timestamp - lastTime) / 1000;
-    lastTime = timestamp;
+    if (!lastTime) { lastTime = timestamp; }
+    const elapsed = timestamp - lastFrameTime;
 
-    // 防止切换标签页后 deltaTime 变得巨大导致瞬移
-    if (deltaTime > 0.1) {
-        return;
-    }
+    if (elapsed > frameInterval) {
+        lastFrameTime = timestamp - (elapsed % frameInterval);
 
-    // 每帧检查 BGM
-    if (!isMatchEnded && gameBgVideo && gameBgVideo.paused) {
-        gameBgVideo.play().catch(() => { });
-    }
+        if (!lastTime) { lastTime = timestamp; }
+        const deltaTime = (timestamp - lastTime) / 1000;
+        lastTime = timestamp;
 
-    c.clearRect(0, 0, canvas.width, canvas.height);
-
-    // if (backgroundImage) {
-    //     c.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-    // }
-
-    //find the two actual players 
-    const fighters = Object.values(players).filter(p => p.side === 'left' || p.side === 'right');
-
-    if (fighters.length == 2) {
-        const p1 = fighters[0];
-        const p2 = fighters[1];
-
-        const p1Center = p1.position.x + p1.width / 2;
-        const p2Center = p2.position.x + p2.width / 2;
-
-        if (p1Center < p2Center) {
-            p1.facing = 'right';
-            p2.facing = 'left';
-        } else {
-            p1.facing = 'left';
-            p2.facing = 'right';
+        if (deltaTime > 0.1) {
+            return;
         }
 
-    }
 
-    if (isGameActive && players[playerId]) {
-        const me = players[playerId];
-        me.velocity.x = 0;
 
-        if (keys.a.pressed && me.lastKey === 'a') {
-            me.velocity.x = -moveSpeed;
-        } else if (keys.d.pressed && me.lastKey === 'd') {
-            me.velocity.x = moveSpeed;
+
+
+
+
+
+        // 每帧检查 BGM
+        if (!isMatchEnded && gameBgVideo && gameBgVideo.paused) {
+            gameBgVideo.play().catch(() => { });
         }
-    }
 
+        c.clearRect(0, 0, canvas.width, canvas.height);
 
-    Object.values(players).forEach(player => player.update(deltaTime));
+        // if (backgroundImage) {
+        //     c.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+        // }
 
-    const me = players[playerId];
+        //find the two actual players 
+        const fighters = Object.values(players).filter(p => p.side === 'left' || p.side === 'right');
 
-    //detect for collision 
-    if (me.isAttacking && me.frameCurrent === 4 && !me.hasHitThisFrame) {
+        if (fighters.length == 2) {
+            const p1 = fighters[0];
+            const p2 = fighters[1];
 
-        me.hasHitThisFrame = true;
+            const p1Center = p1.position.x + p1.width / 2;
+            const p2Center = p2.position.x + p2.width / 2;
 
-        for (const id in players) {
-            if (id === playerId) continue;
-
-            const enemy = players[id];
-            if (rectCollision({ rect1: me.attackBox, rect2: enemy })) {
-                socket.emit("player_hit", {
-                    attacker: playerId,
-                    target: id,
-                    damage: damage
-                });
-                // me.isAttacking = false;
-                console.log('Hit', id);
+            if (p1Center < p2Center) {
+                p1.facing = 'right';
+                p2.facing = 'left';
+            } else {
+                p1.facing = 'left';
+                p2.facing = 'right';
             }
 
-
         }
-    }
 
-    if (me.frameCurrent !== 4) {
-        me.hasHitThisFrame = false;
-    }
+        if (isGameActive && players[playerId]) {
+            const me = players[playerId];
+            me.velocity.x = 0;
 
-    // 减少网络通信频率，每 3 帧发送一次 (约每秒 20 次)
-    if (!me.networkFrameCount) me.networkFrameCount = 0;
-    me.networkFrameCount++;
+            if (keys.a.pressed && me.lastKey === 'a') {
+                me.velocity.x = -moveSpeed;
+            } else if (keys.d.pressed && me.lastKey === 'd') {
+                me.velocity.x = moveSpeed;
+            }
+        }
 
-    if (socket.connected && me.networkFrameCount % 3 === 0) {
-        socket.emit("player_move", {
-            playerId: playerId,
-            x: me.position.x,
-            y: me.position.y,
-            vx: me.velocity.x,
-            vy: me.velocity.y
-        });
-    }
 
-    if (me.state !== lastState) {
-        socket.emit("state_change", {
-            playerId: playerId,
-            state: me.state
-        });
-        lastState = me.state;
+        Object.values(players).forEach(player => player.update(deltaTime));
+
+        const me = players[playerId];
+
+        //detect for collision 
+        if (me.isAttacking && me.frameCurrent === 4 && !me.hasHitThisFrame) {
+
+            me.hasHitThisFrame = true;
+
+            for (const id in players) {
+                if (id === playerId) continue;
+
+                const enemy = players[id];
+                if (rectCollision({ rect1: me.attackBox, rect2: enemy })) {
+                    socket.emit("player_hit", {
+                        attacker: playerId,
+                        target: id,
+                        damage: damage
+                    });
+                    // me.isAttacking = false;
+                    console.log('Hit', id);
+                }
+
+
+            }
+        }
+
+        if (me.frameCurrent !== 4) {
+            me.hasHitThisFrame = false;
+        }
+
+        // 减少网络通信频率，每 3 帧发送一次 (约每秒 20 次)
+        if (!me.networkFrameCount) me.networkFrameCount = 0;
+        me.networkFrameCount++;
+
+        if (socket.connected && me.networkFrameCount % 3 === 0) {
+            socket.emit("player_move", {
+                playerId: playerId,
+                x: me.position.x,
+                y: me.position.y,
+                vx: me.velocity.x,
+                vy: me.velocity.y
+            });
+        }
+
+        if (me.state !== lastState) {
+            socket.emit("state_change", {
+                playerId: playerId,
+                state: me.state
+            });
+            lastState = me.state;
+        }
     }
 }
 
