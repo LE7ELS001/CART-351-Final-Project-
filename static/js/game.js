@@ -263,7 +263,7 @@ socket.on("existing_players", (playersList) => {
                 position: { x: p.x, y: p.y },
                 velocity: { x: 0, y: 0 },
                 color: p.color,
-                invertColor: p.side === 'right',
+                
                 ...SAMURAI_CONFIG
 
             });
@@ -672,4 +672,3 @@ window.addEventListener('keyup', (event) => {
         }
     }
 });
-

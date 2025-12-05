@@ -9,7 +9,6 @@ class Sprite {
         this.scale = scale
         this.framesMax = framesMax
         this.offset = offset
-
     }
 
     draw() {
@@ -19,8 +18,6 @@ class Sprite {
             0,
             this.image.width / this.framesMax,
             this.image.height,
-
-
             this.position.x - this.offset.x,
             this.position.y - this.offset.y,
             (this.image.width / this.framesMax) * this.scale,
@@ -40,7 +37,6 @@ class Sprite {
                 if (this.state === 'attack') {
                     this.isAttacking = false;
                     this.setState('idle');
-
                 }
 
                 if (this.state == 'takeHit') {
@@ -55,11 +51,10 @@ class Sprite {
     update() {
         this.draw();
         this.animateFrames();
-
     }
 }
 
-// player class
+// Player class
 class Player extends Sprite {
     constructor({
         position,
@@ -69,9 +64,7 @@ class Player extends Sprite {
         framesMax = 1,
         offset = { x: 0, y: 0 },
         sprites,
-        color = '#ffffff',
-        invertColor = false
-
+        color = '#ffffff'
     }) {
         super({
             position,
@@ -80,7 +73,6 @@ class Player extends Sprite {
             framesMax,
             offset
         })
-
 
         this.velocity = velocity;
         this.height = p_height;
@@ -104,26 +96,20 @@ class Player extends Sprite {
         this.health = 100;
         this.facing = "right";
         this.isAttacking = false;
-
         this.state = 'idle';
-
         this.color = color
-        this.invertColor = invertColor
 
         this.frameCurrent = 0
         this.framesElapsed = 0
         this.framesHold = 5
         this.sprites = sprites || {}
 
-        //color (copy sprites data)
         this.sprites = JSON.parse(JSON.stringify(sprites || {}));
 
         for (const key in this.sprites) {
             const obj = this.sprites[key];
-
             obj.image = new Image();
             obj.image.src = obj.imageSrc;
-
             obj.tintedImage = null;
 
             obj.image.onload = () => {
@@ -140,15 +126,11 @@ class Player extends Sprite {
             this.image = this.generateTintedImage(this.image);
         }
 
-
         console.log(this.sprites);
     }
 
     generateTintedImage(img) {
         if (!this.color || this.color === '#ffffff' || this.color === '#ff0000') {
-            if (this.invertColor) {
-                return this.invertImageColors(img);
-            }
             return img;
         }
 
@@ -178,7 +160,6 @@ class Player extends Sprite {
 
                 if (isRed) {
                     const intensity = r / 255;
-
                     data[i] = targetColor.r * intensity;
                     data[i + 1] = targetColor.g * intensity;
                     data[i + 2] = targetColor.b * intensity;
@@ -187,12 +168,6 @@ class Player extends Sprite {
         }
 
         ctx.putImageData(imageData, 0, 0);
-
-        // Apply invert if needed
-        if (this.invertColor) {
-            return this.invertImageColors(buffer);
-        }
-
         return buffer;
     }
 
@@ -205,33 +180,7 @@ class Player extends Sprite {
         } : { r: 255, g: 0, b: 0 };
     }
 
-    invertImageColors(img) {
-        const buffer = document.createElement('canvas');
-        buffer.width = img.width;
-        buffer.height = img.height;
-        const ctx = buffer.getContext('2d');
-
-        ctx.drawImage(img, 0, 0);
-
-        const imageData = ctx.getImageData(0, 0, buffer.width, buffer.height);
-        const data = imageData.data;
-
-        for (let i = 0; i < data.length; i += 4) {
-            // Skip transparent pixels
-            if (data[i + 3] > 0) {
-                data[i] = 255 - data[i];         // Red
-                data[i + 1] = 255 - data[i + 1]; // Green
-                data[i + 2] = 255 - data[i + 2]; // Blue
-                // Alpha (data[i + 3]) stays the same
-            }
-        }
-
-        ctx.putImageData(imageData, 0, 0);
-        return buffer;
-    }
-
     setState(newState) {
-
         if (this.state === 'death') {
             return;
         }
@@ -256,10 +205,8 @@ class Player extends Sprite {
 
     attack() {
         if (this.state === 'death') return;
-
         this.setState('attack');
         this.isAttacking = true;
-
     }
 
     takeHit() {
@@ -268,19 +215,7 @@ class Player extends Sprite {
         }
     }
 
-
-
     draw() {
-
-        //test the state
-        // if (this.state === 'idle') c.fillStyle = 'white'
-        // if (this.state === 'run') c.fillStyle = 'blue'
-        // if (this.state === 'jump') c.fillStyle = 'orange'
-        // if (this.state === 'fall') c.fillStyle = 'yellow'
-        // if (this.state === 'attack') c.fillStyle = 'purple'
-        // c.fillRect(this.position.x, this.position.y, this.width, this.height)
-
-        //shadow
         const groundY = 515;
         const centerX = this.position.x + this.width / 2;
         const feetY = this.position.y + this.height;
@@ -291,7 +226,6 @@ class Player extends Sprite {
 
         c.beginPath();
         c.fillStyle = `rgba(0, 0, 0, ${0.5 * shadowScale})`;
-
         c.ellipse(
             centerX,
             groundY + 2,
@@ -306,41 +240,20 @@ class Player extends Sprite {
 
         if (this.facing === 'left') {
             const imageWidth = (this.image.width / this.framesMax) * this.scale;
-
             const drawX = this.position.x - this.offset.x;
-
             c.translate(drawX + imageWidth / 2, this.position.y);
-
             c.scale(-1, 1);
-
             c.translate(-(drawX + imageWidth / 2), -this.position.y);
         }
 
         super.draw();
-
         c.restore();
-
-
-        //attack box debug
-        // if (this.isAttacking) {
-        //     if (this.frameCurrent === 4) {
-        //         c.fillStyle = 'green';
-        //         c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
-        //     }
-        // }
     }
 
     update() {
         this.draw();
         this.animateFrames();
-        //updae attack box position 
         this.updateAttackBox();
-
-        //character collision box debug
-        //debug character collision box 
-        // c.fillStyle = 'rgba(255, 0, 0, 0.3)'
-        // c.fillRect(this.position.x, this.position.y, this.width, this.height)
-
 
         this.position.x += this.velocity.x;
         if (this.position.x < 0) {
@@ -352,14 +265,11 @@ class Player extends Sprite {
 
         this.position.y += this.velocity.y;
 
-
-        //fall to ground
         if (this.position.y + this.height + this.velocity.y >= canvas.height - 61) {
             this.velocity.y = 0;
             this.position.y = 365
 
             if (this.state !== 'death' && this.state !== 'takeHit' && this.state !== 'attack') {
-
                 if (this.velocity.x !== 0) {
                     this.setState('run');
                 } else {
@@ -370,28 +280,21 @@ class Player extends Sprite {
             this.velocity.y += gravity;
         }
 
-        //jump and fall state
         if (this.velocity.y < 0) {
             this.setState('jump');
         } else if (this.velocity.y > 0) {
             this.setState('fall');
         }
-
-
     }
 
     updateAttackBox() {
-
-
         if (this.facing === "right") {
-            this.attackBox.offset.x = this.width;  //right
+            this.attackBox.offset.x = this.width;
         } else {
-            this.attackBox.offset.x = -this.attackBox.width; // left
+            this.attackBox.offset.x = -this.attackBox.width;
         }
 
-        //update collision box position 
         this.attackBox.position.x = this.position.x + this.attackBox.offset.x;
         this.attackBox.position.y = this.position.y + this.attackBox.offset.y;
-
     }
 }
