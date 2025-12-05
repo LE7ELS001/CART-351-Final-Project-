@@ -71,16 +71,6 @@ def reset_round_state():
     for sid, player in list(connected_players.items()):
         if(player['side'] in ['left', 'right']):
             player['side'] = 'spectator'
-            # try:
-            #     emit('assign_side', {
-            #         "playerId": player['playerId'],
-            #         "name": player['playerName'],
-            #         "side": 'spectator',
-            #         "x": -10000, 
-            #         "y": 0
-            #     }, to=sid)
-            # except: 
-            #     pass
 
 #------------- Timer function -------------
 def run_timer():
@@ -453,9 +443,7 @@ def on_disconnect():
                 })
         
             reset_round_state()
-# @socketio.on("player_move")
-# def on_player_move(data):
-#     emit("player_move", data, broadcast=True)
+
 
 #Test MongoDB connection
 # @app.route("/test_db")

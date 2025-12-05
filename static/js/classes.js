@@ -81,10 +81,8 @@ class Player extends Sprite {
             offset
         })
 
-        // this.position = position;
+
         this.velocity = velocity;
-        // this.height = 150;
-        // this.width = 50;
         this.height = p_height;
         this.width = p_width;
         this.lastKey;
@@ -142,10 +140,6 @@ class Player extends Sprite {
             this.image = this.generateTintedImage(this.image);
         }
 
-        // for (const sprite in sprites) {
-        //     sprites[sprite].image = new Image()
-        //     sprites[sprite].image.src = sprites[sprite].imageSrc
-        // }
 
         console.log(this.sprites);
     }
@@ -257,9 +251,6 @@ class Player extends Sprite {
             this.framesMax = this.sprites[newState].framesMax;
             this.frameCurrent = 0;
         }
-        // if (this.state !== newState) {
-        //     this.state = newState;
-        // }
         this.state = newState;
     }
 
@@ -330,7 +321,7 @@ class Player extends Sprite {
         c.restore();
 
 
-        //attack box
+        //attack box debug
         // if (this.isAttacking) {
         //     if (this.frameCurrent === 4) {
         //         c.fillStyle = 'green';
@@ -345,6 +336,7 @@ class Player extends Sprite {
         //updae attack box position 
         this.updateAttackBox();
 
+        //character collision box debug
         //debug character collision box 
         // c.fillStyle = 'rgba(255, 0, 0, 0.3)'
         // c.fillRect(this.position.x, this.position.y, this.width, this.height)

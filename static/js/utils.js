@@ -11,6 +11,40 @@ const targetFPS = 60;
 const frameInterval = 1000 / targetFPS;
 let lastFrameTime = 0;
 
+const gravity = 0.8;
+const moveSpeed = 8;
+const jumpDistance = 18;
+const damage = 20;
+
+function ensureBgmPlaying() {
+    if (gameBgVideo && !isMatchEnded && gameBgVideo.paused) {
+        console.log("BGM is paused, force playing...");
+
+
+        const playPromise = gameBgVideo.play();
+
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+
+            }).catch(err => {
+                console.warn("BGM resume failed:", err);
+
+                setTimeout(() => {
+                    if (!isMatchEnded && gameBgVideo.paused) {
+                        gameBgVideo.play().catch(() => { });
+                    }
+                }, 100);
+            });
+        }
+    }
+}
+
+//get background video
+function getVideoPath(fileName) {
+    return `/static/assets/background/${fileName}`;
+}
+
+
 //dectect for collision 
 function rectCollision({ rect1, rect2 }) {
     return (

@@ -1,8 +1,3 @@
-function getVideoPath(fileName) {
-    return `/static/assets/background/${fileName}`;
-}
-
-
 let myId = localStorage.getItem("fighter_id");
 let myName = localStorage.getItem("fighter_name");
 
@@ -31,28 +26,7 @@ canvas.height = 576;
 const gameBgVideo = document.getElementById("game-bg-video");
 const chosenMap = localStorage.getItem("fighter_map") || "Arizona Desert, U.S.A.mp4";
 
-function ensureBgmPlaying() {
-    if (gameBgVideo && !isMatchEnded && gameBgVideo.paused) {
-        console.log("BGM is paused, force playing...");
 
-        // 尝试多次播放，直到成功
-        const playPromise = gameBgVideo.play();
-
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                // 播放成功
-            }).catch(err => {
-                console.warn("BGM resume failed:", err);
-                // 失败后 100ms 再试一次
-                setTimeout(() => {
-                    if (!isMatchEnded && gameBgVideo.paused) {
-                        gameBgVideo.play().catch(() => { });
-                    }
-                }, 100);
-            });
-        }
-    }
-}
 
 if (gameBgVideo) {
     gameBgVideo.src = getVideoPath(chosenMap);
@@ -108,29 +82,18 @@ if (gameBgVideo) {
     });
 }
 
-// c.fillRect(0, 0, canvas.width, canvas.height);
 
-//players
-// const gravity = 0.3;
-// const moveSpeed = 3;
-// const jumpDistance = 12;
-// const damage = 20;
 
-const gravity = 0.8;
-const moveSpeed = 8;
-const jumpDistance = 18;
-const damage = 20;
+
 
 let lastTime = 0;
 
 //game state
 let isGameActive = true;
-
 let isMatchEnded = false;
 
 
-// const backgroundImage = new Image();
-// backgroundImage.src = '/static/assets/background/background.png';
+
 
 const SAMURAI_CONFIG = {
     imageSrc: '/static/assets/character/Idle.png',
@@ -183,24 +146,6 @@ players[playerId] = new Player({
     velocity: { x: 0, y: 0 },
     color: playerColor,
     ...SAMURAI_CONFIG
-    // offset: {
-    //     x: 215,
-    //     y: 280
-    // },
-
-    // scale: 3,
-    // sprites: {
-    //     idle: {
-    //         imageSrc: '/static/assets/character/Idle.png',
-    //         framesMax: 8,
-    //     },
-    //     run: {
-    //         imageSrc: '/static/assets/character/Run.png',
-    //         framesMax: 8,
-    //     }
-    // }
-
-
 });
 
 
@@ -233,11 +178,11 @@ socket.on("assign_side", ({ playerId, side, x, y, name, color }) => {
     me.position.y = y;
     me.name = name;
 
-    // 如果是右侧玩家，应用反差色
+
     if (side === 'right') {
         me.invertColor = true;
 
-        // 重新生成所有精灵的反差色图像
+
         for (const key in me.sprites) {
             const obj = me.sprites[key];
             if (obj.image && obj.image.complete) {
@@ -248,7 +193,7 @@ socket.on("assign_side", ({ playerId, side, x, y, name, color }) => {
             }
         }
 
-        // 重新生成主图像
+
         if (me.image && me.image.complete) {
             const originalImage = me.image;
             me.image = me.generateTintedImage(originalImage);
@@ -370,7 +315,7 @@ socket.on("reset_positions", () => {
 
     isMatchEnded = false;
 
-    // 确保 BGM 播放
+
     ensureBgmPlaying();
 
     document.getElementById("result-overlay").style.display = "none";
@@ -411,7 +356,7 @@ socket.on("game_state", (data) => {
 
     isGameActive = data.active;
 
-    // 确保 BGM 继续播放
+
     ensureBgmPlaying();
 
     if (!isGameActive) {
@@ -429,7 +374,7 @@ socket.on("game_state", (data) => {
 socket.on("timer_update", (data) => {
     const timerElement = document.getElementById("Timer");
 
-    // 确保 BGM 播放
+
     ensureBgmPlaying();
 
     if (timerElement) {
@@ -560,16 +505,13 @@ function animate(timestamp) {
 
 
 
-        // 每帧检查 BGM
+
         if (!isMatchEnded && gameBgVideo && gameBgVideo.paused) {
             gameBgVideo.play().catch(() => { });
         }
 
         c.clearRect(0, 0, canvas.width, canvas.height);
 
-        // if (backgroundImage) {
-        //     c.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-        // }
 
         //find the two actual players 
         const fighters = Object.values(players).filter(p => p.side === 'left' || p.side === 'right');
@@ -634,7 +576,7 @@ function animate(timestamp) {
             me.hasHitThisFrame = false;
         }
 
-        // 减少网络通信频率，每 3 帧发送一次 (约每秒 20 次)
+
         if (!me.networkFrameCount) me.networkFrameCount = 0;
         me.networkFrameCount++;
 
@@ -664,7 +606,7 @@ animate();
 
 window.addEventListener('keydown', (event) => {
 
-    // BGM 保护始终生效，不管游戏是否激活
+
     ensureBgmPlaying();
 
     //game active check 
@@ -713,7 +655,7 @@ window.addEventListener('keydown', (event) => {
 
 window.addEventListener('keyup', (event) => {
 
-    // BGM 保护始终生效
+
     ensureBgmPlaying();
 
     const me = players[playerId];
@@ -731,19 +673,3 @@ window.addEventListener('keyup', (event) => {
     }
 });
 
-// setInterval(() => {
-//     const player = players[playerId];
-
-//     if (!isGameActive) {
-//         player.velocity.x = 0;
-//         return;
-//     }
-
-//     //move speed
-//     player.velocity.x = 0;
-//     if (keys.a.pressed && player.lastKey === 'a') {
-//         player.velocity.x = -moveSpeed;
-//     } else if (keys.d.pressed && player.lastKey === 'd') {
-//         player.velocity.x = moveSpeed;
-//     }
-// }, 16);
