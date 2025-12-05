@@ -33,7 +33,20 @@ const chosenMap = localStorage.getItem("fighter_map") || "Arizona Desert, U.S.A.
 function ensureBgmPlaying() {
     if (gameBgVideo && !isMatchEnded && gameBgVideo.paused) {
         console.log("BGM is paused, force playing...");
-        gameBgVideo.play().catch(err => console.warn("BGM resume failed:", err));
+        
+        const playPromise = gameBgVideo.play();
+        
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+            }).catch(err => {
+                console.warn("BGM resume failed:", err);
+                setTimeout(() => {
+                    if (!isMatchEnded && gameBgVideo.paused) {
+                        gameBgVideo.play().catch(() => {});
+                    }
+                }, 100);
+            });
+        }
     }
 }
 
@@ -252,6 +265,8 @@ socket.on("player_join", (data) => {
 
 socket.on("player_move", (data) => {
     if (data.playerId === playerId) return;
+    
+    ensureBgmPlaying();
 
     if (players[data.playerId]) {
         players[data.playerId].position.x = data.x;
@@ -286,12 +301,16 @@ socket.on("player_leave", (data) => {
 });
 
 socket.on("state_change", ({ playerId, state }) => {
+    ensureBgmPlaying();
+    
     if (players[playerId]) {
         players[playerId].setState(state);
     }
 });
 
 socket.on('player_attack', ({ playerId }) => {
+    ensureBgmPlaying();
+    
     if (players[playerId]) {
         players[playerId].attack();
     }
@@ -314,7 +333,7 @@ socket.on("update_hp", ({ playerId, hp }) => {
 socket.on("reset_positions", () => {
 
     isMatchEnded = false;
-
+    
     ensureBgmPlaying();
 
     document.getElementById("result-overlay").style.display = "none";
@@ -371,7 +390,7 @@ socket.on("game_state", (data) => {
 // timer
 socket.on("timer_update", (data) => {
     const timerElement = document.getElementById("Timer");
-    
+
     ensureBgmPlaying();
 
     if (timerElement) {
@@ -479,6 +498,10 @@ let lastState = players[playerId].state;
 
 function animate() {
     window.requestAnimationFrame(animate);
+    
+    if (!isMatchEnded && gameBgVideo && gameBgVideo.paused) {
+        gameBgVideo.play().catch(() => {});
+    }
 
     c.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -537,8 +560,11 @@ function animate() {
     if (me.frameCurrent !== 4) {
         me.hasHitThisFrame = false;
     }
+    
+    if (!me.networkFrameCount) me.networkFrameCount = 0;
+    me.networkFrameCount++;
 
-    if (socket.connected) {
+    if (socket.connected && me.networkFrameCount % 3 === 0) {
         socket.emit("player_move", {
             playerId: playerId,
             x: me.position.x,
@@ -562,7 +588,8 @@ function animate() {
 animate();
 
 window.addEventListener('keydown', (event) => {
-
+    
+    // BGM 保护始终生效，不管游戏是否激活
     ensureBgmPlaying();
 
     //game active check 
@@ -610,7 +637,7 @@ window.addEventListener('keydown', (event) => {
 })
 
 window.addEventListener('keyup', (event) => {
-    
+
     ensureBgmPlaying();
     
     const me = players[playerId];
