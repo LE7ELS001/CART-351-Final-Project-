@@ -5,25 +5,25 @@ Match results are tracked and stored, contributing to a persistent leaderboard o
 
 ---------------
 
-## 🎮 Overview
+## Overview
 This project was created as part of a course exploring networked interaction and multiplayer systems.  
 The goal was to build a game that feels immediate and responsive, while also maintaining a record of gameplay history.  
 Although simple in mechanics, the system handles synchronization, real-time interaction, and shared state between two clients.
 
 ---------------
 
-## ✨ Features
+## Features
 
-- 🕹 **1v1 Real-Time Multiplayer**
-- ⚡ Fast and responsive controls
-- 🎨 Pixel-art character sprites
-- 🧾 Persistent leaderboard storing wins/losses in MongoDB
-- 🔊 Real-time hit detection and movement sync via Socket.IO
-- 🌐 Runs entirely in the browser with no installation required for clients
+- **1v1 Real-Time Multiplayer**
+- Fast and responsive controls
+- Pixel-art character sprites
+- Persistent leaderboard storing wins/losses in MongoDB
+- Real-time hit detection and movement sync via Socket.IO
+- Runs entirely in the browser with no installation required for clients
 
 ---------------
 
-## 🎯 Controls
+## Controls
 
 | Action | Key |
 |--------|-----|
@@ -34,7 +34,7 @@ Although simple in mechanics, the system handles synchronization, real-time inte
 
 ---------------
 
-## 🛠 Tech Stack
+## Tech Stack
 
 | Component | Tool |
 |----------|------|
